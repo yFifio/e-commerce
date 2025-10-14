@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../Veiculos.php';
+require_once __DIR__ . '/../Animal.php';
 
 class CartController {
     public function __construct() {
@@ -13,16 +13,16 @@ class CartController {
 
     public function add() {
         $id = $_POST['id'];
-        $veiculoModel = new Veiculo();
-        $veiculo = $veiculoModel->find($id);
+        $animalModel = new Animal();
+        $animal = $animalModel->find($id);
 
-        if ($veiculo && !isset($_SESSION['carrinho'][$id])) {
+        if ($animal && !isset($_SESSION['carrinho'][$id])) {
             $_SESSION['carrinho'][$id] = [
-                'id' => $veiculo['id'],
-                'modelo' => $veiculo['modelo'],
-                'marca' => $veiculo['marca'],
-                'preco' => $veiculo['preco'],
-                'imagem_url' => $veiculo['imagem_url']
+                'id' => $animal['id'],
+                'especie' => $animal['especie'],
+                'origem' => $animal['origem'],
+                'preco' => $animal['preco'],
+                'imagem_url' => $animal['imagem_url']
             ];
         }
         header('Location: /carrinho');

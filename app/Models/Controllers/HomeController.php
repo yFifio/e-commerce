@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../Veiculos.php';
+require_once __DIR__ . '/../Animal.php';
 
 class HomeController {
     public function index() {
-        $veiculoModel = new Veiculo();
-        $veiculos = $veiculoModel->getAll();
+        $animalModel = new Animal();
+        $animais = $animalModel->getAll();
         require_once __DIR__ . '/../Views/home.php';
     }
 }

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../Veiculos.php';
+require_once __DIR__ . '/../Animal.php';
 
 class DashboardController {
     public function index() {
@@ -8,8 +8,8 @@ class DashboardController {
 
     public function data() {
         header('Content-Type: application/json');
-        $veiculoModel = new Veiculo();
-        $data = $veiculoModel->getDashboardData();
+        $animalModel = new Animal();
+        $data = $animalModel->getDashboardData();
         echo json_encode($data);
     }
 }

@@ -15,7 +15,7 @@
             <?php $total = 0; ?>
             <?php foreach ($carrinho as $item): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($item['modelo']); ?></td>
+                    <td><?php echo htmlspecialchars($item['especie']); ?></td>
                     <td>R$ <?php echo number_format($item['preco'], 2, ',', '.'); ?></td>
                     <td>
                         <form action="/carrinho/remove" method="post" style="display:inline;">

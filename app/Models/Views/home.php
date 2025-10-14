@@ -2,15 +2,15 @@
 
 <h1>Nossos Animais Exóticos</h1>
 <div class="vehicle-grid">
-    <?php foreach ($veiculos as $veiculo): ?>
+    <?php foreach ($animais as $animal): ?>
     <div class="vehicle-card">
-        <img src="<?php echo htmlspecialchars($veiculo['imagem_url']); ?>" alt="<?php echo htmlspecialchars($veiculo['marca'] . ' ' . $veiculo['modelo']); ?>">
+        <img src="<?php echo htmlspecialchars($animal['imagem_url']); ?>" alt="<?php echo htmlspecialchars($animal['especie']); ?>">
         <div class="vehicle-card-content">
-            <h3><?php echo htmlspecialchars($veiculo['modelo']); ?></h3>
-            <p>Origem: <?php echo htmlspecialchars($veiculo['marca']); ?></p>
-            <div class="price">R$ <?php echo number_format($veiculo['preco'], 2, ',', '.'); ?></div>
+            <h3><?php echo htmlspecialchars($animal['especie']); ?></h3>
+            <p>Origem: <?php echo htmlspecialchars($animal['origem']); ?></p>
+            <div class="price">R$ <?php echo number_format($animal['preco'], 2, ',', '.'); ?></div>
             <form action="/carrinho/add" method="post">
-                <input type="hidden" name="id" value="<?php echo $veiculo['id']; ?>">
+                <input type="hidden" name="id" value="<?php echo $animal['id']; ?>">
                 <button type="submit" class="btn">Adotar</button>
             </form>
         </div>
