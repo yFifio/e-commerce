@@ -8,13 +8,20 @@ if (session_status() == PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-commerce de Carros</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Exotic Pets Emporium</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap (ainda útil para base e componentes) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">    
+    <!-- Nosso CSS customizado -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Carros S.A.</a>
+        <a class="navbar-brand" href="/">Exotic Pets Emporium</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
@@ -26,7 +33,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <a href="/logout" class="btn btn-outline-light me-2">Sair</a>
                 <?php else: ?>
                     <a href="/login" class="btn btn-outline-light me-2">Login</a>
-                    <a href="/register" class="btn btn-primary">Registrar</a>
+                    <a href="/register" class="btn btn-primary me-2">Registrar</a>
                 <?php endif; ?>
                 <a href="/carrinho" class="btn btn-warning">Carrinho</a>
             </div>

@@ -2,11 +2,11 @@
 
 /* ===== Variáveis de Cor e Fontes Globais ===== */
 :root {
-  --primary-color: #3a86ff; /* Azul vibrante */
-  --secondary-color: #ff006e; /* Rosa/Magenta para destaque */
-  --background-color: #f8f9fa; /* Fundo cinza bem claro */
+  --primary-color: #2d6a4f; /* Verde floresta */
+  --secondary-color: #ffb703; /* Laranja/Dourado para destaque */
+  --background-color: #f4f1de; /* Fundo bege/areia */
   --surface-color: #ffffff; /* Cor de fundo para cartões */
-  --text-color: #343a40; /* Texto escuro */
+  --text-color: #403d39; /* Texto marrom escuro */
   --light-text-color: #ffffff;
   --border-color: #dee2e6;
   --success-color: #28a745;
@@ -124,9 +124,9 @@ a:hover {
 }
 
 .btn:hover {
-  background-color: #3377e0;
+  background-color: #1b4332;
   transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(58, 134, 255, 0.4);
+  box-shadow: 0 6px 15px rgba(45, 106, 79, 0.4);
   color: var(--light-text-color);
   text-decoration: none;
 }
@@ -136,8 +136,8 @@ a:hover {
 }
 
 .btn-secondary:hover {
-  background-color: #e60064;
-  box-shadow: 0 6px 15px rgba(255, 0, 110, 0.4);
+  background-color: #fb8500;
+  box-shadow: 0 6px 15px rgba(255, 183, 3, 0.4);
 }
 
 .btn-danger {

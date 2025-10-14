@@ -1,12 +1,12 @@
 <?php require __DIR__ . '/layouts/header.php'; ?>
-<h2>Carrinho de Compras</h2>
+<h2>Meu Cesto de Adoção</h2>
 <?php if (empty($carrinho)): ?>
-    <p>Seu carrinho está vazio.</p>
+    <p>Seu cesto está vazio.</p>
 <?php else: ?>
     <table class="table">
         <thead>
             <tr>
-                <th>Produto</th>
+                <th>Animal</th>
                 <th>Preço</th>
                 <th>Ação</th>
             </tr>
@@ -15,7 +15,7 @@
             <?php $total = 0; ?>
             <?php foreach ($carrinho as $item): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($item['marca'] . ' ' . $item['modelo']); ?></td>
+                    <td><?php echo htmlspecialchars($item['modelo']); ?></td>
                     <td>R$ <?php echo number_format($item['preco'], 2, ',', '.'); ?></td>
                     <td>
                         <form action="/carrinho/remove" method="post" style="display:inline;">
