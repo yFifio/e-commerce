@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../Animal.php';
-require_once __DIR__ . '/../Model.php';
+require_once __DIR__ . '/../Models/Animal.php';
+require_once __DIR__ . '/../Models/Model.php';
 
 class CartController extends Model {
     public function __construct() {

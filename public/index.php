@@ -2,7 +2,7 @@
 $request_uri = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
 
 function loadController($controllerName) {
-    require_once __DIR__ . "/../app/Models/Controllers/{$controllerName}.php";
+    require_once __DIR__ . "/../app/Controllers/{$controllerName}.php";
 }
 
 switch ($request_uri) {

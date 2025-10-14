@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../Animal.php';
+require_once __DIR__ . '/../Models/Animal.php';
 
 class HomeController {
     public function index() {
