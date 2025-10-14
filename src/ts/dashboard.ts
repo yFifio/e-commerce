@@ -1,9 +1,9 @@
 declare const Chart: any;
 
 interface DashboardData {
-  total_veiculos: string;
+  total_animais: string;
   total_usuarios: string;
-  total_pedidos: string;
+  total_adocoes: string;
   faturamento_total: string;
 }
 
@@ -16,9 +16,9 @@ async function fetchDashboardData(): Promise<DashboardData> {
 }
 
 function updateSummaryCards(data: DashboardData): void {
-  document.getElementById("total-veiculos")!.textContent = data.total_veiculos;
+  document.getElementById("total-animais")!.textContent = data.total_animais;
   document.getElementById("total-usuarios")!.textContent = data.total_usuarios;
-  document.getElementById("total-pedidos")!.textContent = data.total_pedidos;
+  document.getElementById("total-adocoes")!.textContent = data.total_adocoes;
   const faturamento = parseFloat(data.faturamento_total || "0").toLocaleString(
     "pt-BR",
     { style: "currency", currency: "BRL" }
@@ -39,14 +39,14 @@ function updateSummaryCards(data: DashboardData): void {
       new Chart(ctx, {
         type: "bar",
         data: {
-          labels: ["Veículos", "Usuários", "Pedidos"],
+          labels: ["Animais", "Usuários", "Adoções"],
           datasets: [
             {
               label: "Totais do E-commerce",
               data: [
-                data.total_veiculos,
+                data.total_animais,
                 data.total_usuarios,
-                data.total_pedidos,
+                data.total_adocoes,
               ],
               backgroundColor: [
                 "rgba(54, 162, 235, 0.5)",

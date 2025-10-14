@@ -35,7 +35,9 @@
             </tr>
         </tfoot>
     </table>
-    <button class="btn btn-success">Finalizar Compra</button>
+    <div class="text-end">
+        <a href="/carrinho/checkout" class="btn btn-success">Finalizar Adoção</a>
+    </div>
 <?php endif; ?>
 
 <?php require __DIR__ . '/layouts/footer.php'; ?>

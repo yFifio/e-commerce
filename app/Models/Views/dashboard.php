@@ -10,16 +10,16 @@
                 <h5 class="card-title">Resumo Geral</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Total de Veículos
-                        <span id="total-veiculos" class="badge bg-primary rounded-pill">0</span>
+                        Total de Animais
+                        <span id="total-animais" class="badge bg-primary rounded-pill">0</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Total de Usuários
                         <span id="total-usuarios" class="badge bg-info rounded-pill">0</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Total de Pedidos
-                        <span id="total-pedidos" class="badge bg-warning rounded-pill">0</span>
+                        Total de Adoções
+                        <span id="total-adocoes" class="badge bg-warning rounded-pill">0</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Faturamento Total

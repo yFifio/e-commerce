@@ -1,12 +1,9 @@
-/* public/css/style.css */
-
-/* ===== Variáveis de Cor e Fontes Globais ===== */
 :root {
-  --primary-color: #2d6a4f; /* Verde floresta */
-  --secondary-color: #ffb703; /* Laranja/Dourado para destaque */
-  --background-color: #f4f1de; /* Fundo bege/areia */
-  --surface-color: #ffffff; /* Cor de fundo para cartões */
-  --text-color: #403d39; /* Texto marrom escuro */
+  --primary-color: #2d6a4f;
+  --secondary-color: #ffb703;
+  --background-color: #f4f1de;
+  --surface-color: #ffffff;
+  --text-color: #403d39;
   --light-text-color: #ffffff;
   --border-color: #dee2e6;
   --success-color: #28a745;
@@ -18,7 +15,6 @@
   --transition: all 0.3s ease-in-out;
 }
 
-/* ===== Estilos Base e Tipografia ===== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -61,7 +57,6 @@ a:hover {
   padding: 0 2rem;
 }
 
-/* ===== Header / Navegação ===== */
 .main-nav {
   background-color: var(--surface-color);
   padding: 1rem 2rem;
@@ -108,7 +103,6 @@ a:hover {
   width: 100%;
 }
 
-/* ===== Botões Animados ===== */
 .btn {
   display: inline-block;
   padding: 0.8rem 1.5rem;
@@ -148,7 +142,6 @@ a:hover {
   box-shadow: 0 6px 15px rgba(220, 53, 69, 0.4);
 }
 
-/* ===== Cartões de Veículos (Home) ===== */
 .vehicle-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -195,7 +188,6 @@ a:hover {
   margin-bottom: 1rem;
 }
 
-/* ===== Formulários (Login/Register) ===== */
 .form-container {
   max-width: 450px;
   margin: 4rem auto;
@@ -243,7 +235,6 @@ a:hover {
   margin-bottom: 1rem;
 }
 
-/* ===== Carrinho de Compras ===== */
 .cart-item {
   display: flex;
   align-items: center;

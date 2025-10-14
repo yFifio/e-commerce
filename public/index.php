@@ -49,6 +49,16 @@ switch ($request_uri) {
         $controller = new CartController();
         $controller->remove();
         break;
+    case '/carrinho/checkout':
+        loadController('CartController');
+        $controller = new CartController();
+        $controller->checkout();
+        break;
+    case '/carrinho/finalizar':
+        loadController('CartController');
+        $controller = new CartController();
+        $controller->finalizar();
+        break;
     case '/dashboard':
         loadController('DashboardController');
         $controller = new DashboardController();

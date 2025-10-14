@@ -4,7 +4,10 @@
 <div class="vehicle-grid">
     <?php foreach ($animais as $animal): ?>
     <div class="vehicle-card">
-        <img src="<?php echo htmlspecialchars($animal['imagem_url']); ?>" alt="<?php echo htmlspecialchars($animal['especie']); ?>">
+        <?php 
+            $imageUrl = !empty($animal['imagem_url']) ? $animal['imagem_url'] : 'https://via.placeholder.com/300x200.png?text=Sem+Imagem';
+        ?>
+        <img src="<?php echo htmlspecialchars($imageUrl); ?>" alt="<?php echo htmlspecialchars($animal['especie']); ?>">
         <div class="vehicle-card-content">
             <h3><?php echo htmlspecialchars($animal['especie']); ?></h3>
             <p>Origem: <?php echo htmlspecialchars($animal['origem']); ?></p>
