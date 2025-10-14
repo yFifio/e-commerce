@@ -3,14 +3,24 @@ require_once __DIR__ . '/Model.php';
 
 class Animal extends Model {
     public function getAll() {
-        $stmt = $this->db->prepare("SELECT * FROM animais WHERE estoque > 0");
-        $stmt->execute();
+        $searchTerm = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        
+        $sql = "SELECT * FROM animais WHERE estoque > 0";
+        $params = [];
+
+        if ($searchTerm) {
+            $sql .= " AND (especie LIKE :searchTerm OR origem LIKE :searchTerm)";
+            $params[':searchTerm'] = '%' . $searchTerm . '%';
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function find($id) {
-        $stmt = $this->db->prepare("SELECT * FROM animais WHERE id = ?");
-        $stmt->execute([$id]);
+        $stmt = $this->db->prepare("SELECT * FROM animais WHERE id = :id");
+        $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     

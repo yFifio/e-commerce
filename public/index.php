@@ -69,6 +69,16 @@ switch ($request_uri) {
         $controller = new DashboardController();
         $controller->data();
         break;
+    case '/animal':
+        loadController('AnimalController');
+        $controller = new AnimalController();
+        $controller->show();
+        break;
+    case '/minhas-adocoes':
+        loadController('UsuarioController');
+        $controller = new UsuarioController();
+        $controller->showAdocoes();
+        break;
     default:
         http_response_code(404);
         echo "Página não encontrada.";

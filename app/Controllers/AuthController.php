@@ -26,6 +26,7 @@ class AuthController {
             session_start();
             $_SESSION['usuario_id'] = $usuario['id'];
             $_SESSION['usuario_nome'] = $usuario['nome'];
+            $_SESSION['user_role'] = $usuario['role'];
             header('Location: /');
         } else {
             header('Location: /login?error=1');
