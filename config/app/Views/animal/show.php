@@ -2,13 +2,13 @@
 
 <?php if ($animal): ?>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <?php 
                 $imageUrl = !empty($animal['imagem_url']) ? '/imagem/' . $animal['imagem_url'] : 'https://via.placeholder.com/600x400.png?text=Sem+Imagem';
             ?>
             <img src="<?php echo htmlspecialchars($imageUrl); ?>" class="img-fluid rounded" alt="<?php echo htmlspecialchars($animal['especie']); ?>">
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h1><?php echo htmlspecialchars($animal['especie']); ?></h1>
             <p class="lead">Origem: <?php echo htmlspecialchars($animal['origem']); ?></p>
             <h2 class="price my-4">R$ <?php echo number_format($animal['preco'], 2, ',', '.'); ?></h2>
