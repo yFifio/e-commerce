@@ -153,9 +153,8 @@ cd e-commerce
     A aplicação estará pronta para ser utilizada\!
 
 Integrantes:
+
 Lucas de Fiori Viudes
 Vitto Lorenzo Barboza Legnani
 Lucas Gozer Lopes
 
-  * **[Nome do Integrante 1]**
-  * **[Nome do Integrante 2]**
