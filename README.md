@@ -152,7 +152,7 @@ cd e-commerce
 
     A aplicação estará pronta para ser utilizada\!
 
-## **Integrantes da Dupla**
+## **Integrantes**
 
   * Lucas de Fiori Viudes
   * Vitto Lorenzo Barboza Legnani
