@@ -1,4 +1,4 @@
-Com certeza\! Abaixo está o README formatado conforme solicitado, incluindo todos os scripts SQL necessários para a configuração e o funcionamento completo da aplicação.
+Com certeza\! O README foi atualizado com os nomes dos integrantes.
 
 -----
 
@@ -152,9 +152,8 @@ cd e-commerce
 
     A aplicação estará pronta para ser utilizada\!
 
-Integrantes:
+## **Integrantes da Dupla**
 
-Lucas de Fiori Viudes.
-Vitto Lorenzo Barboza Legnani.
-Lucas Gozer Lopes.
-
+  * Lucas de Fiori Viudes
+  * Vitto Lorenzo Barboza Legnani
+  * Lucas Gozer Lopes
