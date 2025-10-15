@@ -1,4 +1,13 @@
-declare const Chart: any;
+import {
+  Chart,
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Legend,
+} from "chart.js";
+
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Legend);
 
 interface DashboardData {
   total_animais: string;
@@ -16,10 +25,13 @@ async function fetchDashboardData(): Promise<DashboardData> {
 }
 
 function updateSummaryCards(data: DashboardData): void {
-  document.getElementById("total-animais")!.textContent = data.total_animais;
-  document.getElementById("total-usuarios")!.textContent = data.total_usuarios;
-  document.getElementById("total-adocoes")!.textContent = data.total_adocoes;
-  const faturamento = parseFloat(data.faturamento_total || "0").toLocaleString(
+  document.getElementById("total-animais")!.textContent =
+    data.total_animais || "0";
+  document.getElementById("total-usuarios")!.textContent =
+    data.total_usuarios || "0";
+  document.getElementById("total-adocoes")!.textContent =
+    data.total_adocoes || "0";
+  const faturamento = parseFloat(data.faturamento_total ?? "0").toLocaleString(
     "pt-BR",
     { style: "currency", currency: "BRL" }
   );
@@ -44,9 +56,9 @@ function updateSummaryCards(data: DashboardData): void {
             {
               label: "Totais do E-commerce",
               data: [
-                data.total_animais,
-                data.total_usuarios,
-                data.total_adocoes,
+                parseInt(data.total_animais, 10),
+                parseInt(data.total_usuarios, 10),
+                parseInt(data.total_adocoes, 10),
               ],
               backgroundColor: [
                 "rgba(54, 162, 235, 0.5)",

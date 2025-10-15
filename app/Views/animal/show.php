@@ -5,7 +5,8 @@
         <div class="row">
             <div class="col-md-8">
                 <?php 
-                    $imageUrl = !empty($animal['imagem_url']) ? '/imagem/' . $animal['imagem_url'] : 'https://via.placeholder.com/600x400.png?text=Sem+Imagem';
+                    $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/imagem/' . $animal['imagem_url'];
+                    $imageUrl = !empty($animal['imagem_url']) && file_exists($imagePath) ? '/imagem/' . $animal['imagem_url'] : 'https://via.placeholder.com/600x400.png?text=Sem+Imagem';
                 ?>
                 <img src="<?php echo htmlspecialchars($imageUrl); ?>" class="img-fluid rounded shadow-lg" alt="<?php echo htmlspecialchars($animal['especie']); ?>">
             </div>
@@ -21,7 +22,7 @@
                     </div>
                 <?php endif; ?>
                 
-                <p><strong>Data de Nascimento:</strong> <?php echo date("d/m/Y", strtotime($animal['data_nascimento'])); ?></p>
+                <p><strong>Data de Nascimento:</strong> <?php echo htmlspecialchars(date("d/m/Y", strtotime($animal['data_nascimento']))); ?></p>
                 <p><strong>Em estoque:</strong> <?php echo htmlspecialchars($animal['estoque']); ?> unidades</p>
 
                 <form action="/carrinho/add" method="post" class="mt-4">
@@ -39,7 +40,7 @@
                 </div>
                 <?php foreach ($relatedAnimals as $relatedAnimal): ?>
                     <div class="col-md-4">
-                        <div class="card mb-4 shadow-sm">
+                        <div class="card mb-4 shadow-sm h-100">
                             <?php 
                                 $imageUrl = !empty($relatedAnimal['imagem_url']) ? '/imagem/' . $relatedAnimal['imagem_url'] : 'https://via.placeholder.com/300x200.png?text=Sem+Imagem';
                             ?>

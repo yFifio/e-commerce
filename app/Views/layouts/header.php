@@ -15,7 +15,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">    
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Exotic Pets Emporium</a>
@@ -47,4 +47,5 @@ if (session_status() == PHP_SESSION_NONE) {
         </div>
     </div>
 </nav>
-<div class="container mt-4">
+<main class="flex-grow-1">
+    <div class="container mt-4">
