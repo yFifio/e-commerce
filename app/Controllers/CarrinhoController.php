@@ -24,10 +24,8 @@ class CarrinhoController {
 
         if ($animal && $animal['estoque'] > 0) {
             if (isset($_SESSION['carrinho'][$id])) {
-                // Se o animal já está no carrinho, apenas incrementa a quantidade
                 $_SESSION['carrinho'][$id]['quantidade']++;
             } else {
-                // Adiciona o animal ao carrinho com quantidade 1
                 $_SESSION['carrinho'][$id] = [
                     'dados' => $animal,
                     'quantidade' => 1
@@ -40,7 +38,6 @@ class CarrinhoController {
     public function show() {
         $carrinho = $_SESSION['carrinho'] ?? [];
 
-        // Limpa itens malformados do carrinho para evitar erros na view
         foreach ($carrinho as $id => $item) {
             if (!isset($item['dados']) || !isset($item['quantidade'])) {
                 unset($carrinho[$id]);
@@ -70,7 +67,6 @@ class CarrinhoController {
 
         if ($id && $action && isset($_SESSION['carrinho'][$id])) {
             if ($action === 'increase') {
-                // Aumenta a quantidade, respeitando o estoque
                 if ($_SESSION['carrinho'][$id]['quantidade'] < $_SESSION['carrinho'][$id]['dados']['estoque']) {
                     $_SESSION['carrinho'][$id]['quantidade']++;
                 }
@@ -128,7 +124,6 @@ class CarrinhoController {
         $total = array_sum(array_map(fn($item) => $item['dados']['preco'] * $item['quantidade'], $carrinho));
         $metodo_pagamento = filter_input(INPUT_POST, 'metodo_pagamento', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-        // Dados do pagamento (simulação)
         $nome_cartao = filter_input(INPUT_POST, 'nome_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $numero_cartao = filter_input(INPUT_POST, 'numero_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $validade_cartao = filter_input(INPUT_POST, 'validade_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -141,26 +136,30 @@ class CarrinhoController {
             $adocao_id = $this->db->lastInsertId();
 
             $animalModel = new Animal();
+            foreach ($carrinho as $id => $item) {
+                $animalAtual = $animalModel->find($id);
+                if (!$animalAtual || $animalAtual['estoque'] < $item['quantidade']) {
+                    throw new Exception("Estoque insuficiente para o animal: " . htmlspecialchars($item['dados']['especie']));
+                }
+            }
+
+            $animalModel = new Animal();
             foreach ($carrinho as $item) {
                 $stmt = $this->db->prepare("INSERT INTO adocao_itens (adocao_id, animal_id, preco_unitario, quantidade) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$adocao_id, $item['dados']['id'], $item['dados']['preco'], $item['quantidade']]);
                 $animalModel->decreaseStock($item['dados']['id'], $item['quantidade']);
             }
             
-            // Apenas os 4 últimos dígitos para segurança (simulada)
             $numero_cartao_final = $numero_cartao ? substr($numero_cartao, -4) : null;
 
-            // Inserir na tabela de pagamentos
             $stmt = $this->db->prepare(
                 "INSERT INTO pagamentos (adocao_id, metodo_pagamento, status_pagamento, transacao_id, nome_cartao, numero_cartao_final, validade_cartao) 
                  VALUES (?, ?, ?, ?, ?, ?, ?)"
             );
-            // Em um sistema real, o status seria 'pendente' e o transacao_id viria de um gateway
             $stmt->execute([$adocao_id, $metodo_pagamento, 'aprovado', 'simulacao_' . uniqid(), $nome_cartao, $numero_cartao_final, $validade_cartao]);
 
             $this->db->commit();
             unset($_SESSION['carrinho']);
-            // Redireciona para uma página de sucesso
             header('Location: /index.php/adocao/sucesso?id=' . $adocao_id);
 
         } catch (Exception $e) {

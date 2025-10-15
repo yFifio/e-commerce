@@ -3,7 +3,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Nossos Animais Exóticos</h1>
     <form action="/index.php" method="GET" class="d-flex">
-        <input class="form-control me-2" type="search" name="q" placeholder="Buscar por espécie ou origem..." aria-label="Buscar" value="<?php echo htmlspecialchars($_GET['q'] ?? ''); // A busca continua funcionando na raiz ?>">
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar por espécie ou origem..." aria-label="Buscar" value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
         <button class="btn btn-outline-success" type="submit">Buscar</button>
     </form>
 </div>

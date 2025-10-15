@@ -3,16 +3,13 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Pega o caminho da URL, por exemplo: /carrinho/add
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Remove a barra inicial para corresponder aos casos do switch
 $route = ltrim($request_uri, '/');
 
-// Se a rota começar com 'index.php/', remove essa parte
 if (strpos($route, 'index.php/') === 0) {
     $route = substr($route, strlen('index.php/'));
-} elseif ($route === 'index.php') { // Se a rota for exatamente 'index.php', trata como raiz
+} elseif ($route === 'index.php') {
     $route = '';
 }
 $method = $_SERVER['REQUEST_METHOD'];
@@ -23,13 +20,11 @@ function loadController($controllerName) {
 
 switch ($route) {
     case '':
-    // A rota vazia agora corresponde à página inicial
         loadController('HomeController');
         $controller = new HomeController();
         $controller->index();
         break;
     
-    // --- Autenticação ---
     case 'login':
         loadController('AuthController');
         $controller = new AuthController();
@@ -56,7 +51,6 @@ switch ($route) {
         $controller->logout();
         break;
 
-    // --- Dashboard (Admin) ---
     case 'dashboard':
         loadController('DashboardController');
         $controller = new DashboardController();
@@ -69,14 +63,12 @@ switch ($route) {
         $controller->data();
         break;
 
-    // --- Animais ---
     case 'animal':
         loadController('AnimalController');
         $controller = new AnimalController();
         $controller->show();
         break;
 
-    // --- Carrinho e Checkout ---
     case 'carrinho/add':
         loadController('CarrinhoController');
         $controller = new CarrinhoController();
@@ -119,7 +111,6 @@ switch ($route) {
         $controller->finalizar();
         break;
 
-    // --- Área do Usuário ---
     case 'minhas-adocoes':
         loadController('UsuarioController');
         $controller = new UsuarioController();
