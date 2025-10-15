@@ -22,7 +22,9 @@ if (session_status() == PHP_SESSION_NONE) {
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                <?php endif; ?>
             </ul>
             <div class="d-flex">
                 <?php if (isset($_SESSION['usuario_id'])): ?>
