@@ -17,7 +17,7 @@
         <?php foreach ($animais as $animal): ?>
         <div class="vehicle-card">
             <a href="/index.php/animal?id=<?php echo $animal['id']; ?>">
-                <img src="<?php echo htmlspecialchars(!empty($animal['imagem_url']) ? $animal['imagem_url'] : 'https://via.placeholder.com/300x200.png?text=Sem+Imagem'); ?>" alt="<?php echo htmlspecialchars($animal['especie']); ?>">
+                <img src="<?php echo htmlspecialchars(!empty($animal['imagem_url']) ? '/imagem/' . $animal['imagem_url'] : 'https://via.placeholder.com/300x200.png?text=Sem+Imagem'); ?>" alt="<?php echo htmlspecialchars($animal['especie']); ?>">
             </a>
             <div class="vehicle-card-content">
                 <h3><a href="/index.php/animal?id=<?php echo $animal['id']; ?>"><?php echo htmlspecialchars($animal['especie']); ?></a></h3>

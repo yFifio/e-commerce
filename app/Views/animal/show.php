@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-6">
             <?php 
-                $imageUrl = !empty($animal['imagem_url']) ? $animal['imagem_url'] : 'https://via.placeholder.com/600x400.png?text=Sem+Imagem';
+                $imageUrl = !empty($animal['imagem_url']) ? '/imagem/' . $animal['imagem_url'] : 'https://via.placeholder.com/600x400.png?text=Sem+Imagem';
             ?>
             <img src="<?php echo htmlspecialchars($imageUrl); ?>" class="img-fluid rounded" alt="<?php echo htmlspecialchars($animal['especie']); ?>">
         </div>
