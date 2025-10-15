@@ -13,6 +13,12 @@ class AnimalController {
         $animalModel = new Animal();
         $animal = $animalModel->find($id);
 
+        if ($animal) {
+            $relatedAnimals = $animalModel->getRelated($animal['especie'], $animal['id']);
+        } else {
+            $relatedAnimals = [];
+        }
+
         require_once __DIR__ . '/../Views/animal/show.php'; 
     }
 }

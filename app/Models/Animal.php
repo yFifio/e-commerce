@@ -9,8 +9,9 @@ class Animal extends Model {
         $params = [];
 
         if ($searchTerm) {
-            $sql .= " AND (especie LIKE :searchTerm OR origem LIKE :searchTerm)";
-            $params[':searchTerm'] = '%' . $searchTerm . '%';
+            $sql .= " AND (especie LIKE :searchTermEspecie OR origem LIKE :searchTermOrigem)";
+            $params[':searchTermEspecie'] = '%' . $searchTerm . '%';
+            $params[':searchTermOrigem'] = '%' . $searchTerm . '%';
         }
 
         $stmt = $this->db->prepare($sql);
@@ -40,5 +41,13 @@ class Animal extends Model {
     public function decreaseStock($id, $quantity) {
         $stmt = $this->db->prepare("UPDATE animais SET estoque = estoque - ? WHERE id = ?");
         return $stmt->execute([$quantity, $id]);
+    }
+
+    public function getRelated($especie, $currentId) {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM animais WHERE especie = ? AND id != ? AND estoque > 0 ORDER BY RAND() LIMIT 3"
+        );
+        $stmt->execute([$especie, $currentId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
