@@ -1,13 +1,4 @@
-import {
-  Chart,
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Legend,
-} from "chart.js";
-
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Legend);
+declare const Chart: any;
 
 interface DashboardData {
   total_animais: string;
@@ -56,9 +47,9 @@ function updateSummaryCards(data: DashboardData): void {
             {
               label: "Totais do E-commerce",
               data: [
-                parseInt(data.total_animais, 10),
-                parseInt(data.total_usuarios, 10),
-                parseInt(data.total_adocoes, 10),
+                data.total_animais,
+                data.total_usuarios,
+                data.total_adocoes,
               ],
               backgroundColor: [
                 "rgba(54, 162, 235, 0.5)",

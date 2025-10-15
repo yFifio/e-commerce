@@ -18,10 +18,14 @@ function fetchDashboardData() {
     });
 }
 function updateSummaryCards(data) {
-    document.getElementById("total-animais").textContent = data.total_animais;
-    document.getElementById("total-usuarios").textContent = data.total_usuarios;
-    document.getElementById("total-adocoes").textContent = data.total_adocoes;
-    const faturamento = parseFloat(data.faturamento_total || "0").toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    var _a;
+    document.getElementById("total-animais").textContent =
+        data.total_animais || "0";
+    document.getElementById("total-usuarios").textContent =
+        data.total_usuarios || "0";
+    document.getElementById("total-adocoes").textContent =
+        data.total_adocoes || "0";
+    const faturamento = parseFloat((_a = data.faturamento_total) !== null && _a !== void 0 ? _a : "0").toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     document.getElementById("faturamento-total").textContent = faturamento;
 }
 (() => __awaiter(void 0, void 0, void 0, function* () {
