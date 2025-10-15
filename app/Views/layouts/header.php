@@ -28,8 +28,16 @@ if (session_status() == PHP_SESSION_NONE) {
             </ul>
             <div class="d-flex">
                 <?php if (isset($_SESSION['usuario_id'])): ?>
-                    <span class="navbar-text me-3">Olá, <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></span>
-                    <a href="/logout" class="btn btn-outline-light me-2">Sair</a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white me-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Olá, <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/minhas-adocoes">Minhas Adoções</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Sair</a></li>
+                        </ul>
+                    </div>
                 <?php else: ?>
                     <a href="/login" class="btn btn-outline-light me-2">Login</a>
                     <a href="/register" class="btn btn-primary me-2">Registrar</a>

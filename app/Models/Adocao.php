@@ -19,4 +19,47 @@ class Adocao extends Model {
         $stmt->execute([':usuario_id' => $usuario_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function beginTransaction() {
+        $this->db->beginTransaction();
+    }
+
+    public function commit() {
+        $this->db->commit();
+    }
+
+    public function rollback() {
+        $this->db->rollBack();
+    }
+
+    public function create($usuario_id, $valor_total, $itens) {
+        $stmt = $this->db->prepare(
+            "INSERT INTO adocoes (usuario_id, valor_total) VALUES (:usuario_id, :valor_total)"
+        );
+        $stmt->execute([
+            ':usuario_id' => $usuario_id,
+            ':valor_total' => $valor_total
+        ]);
+        
+        $adocaoId = $this->db->lastInsertId();
+
+        if (!$adocaoId) {
+            return false;
+        }
+
+        $stmtItem = $this->db->prepare(
+            "INSERT INTO adocao_itens (adocao_id, animal_id, quantidade, preco_unitario) VALUES (:adocao_id, :animal_id, :quantidade, :preco_unitario)"
+        );
+
+        foreach ($itens as $item) {
+            $stmtItem->execute([
+                ':adocao_id' => $adocaoId,
+                ':animal_id' => $item['id'],
+                ':quantidade' => $item['quantidade'],
+                ':preco_unitario' => $item['preco']
+            ]);
+        }
+
+        return $adocaoId;
+    }
 }

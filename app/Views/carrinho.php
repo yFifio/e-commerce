@@ -6,37 +6,55 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Animal</th>
-                <th>Preço</th>
-                <th>Ação</th>
+                <th scope="col">Animal</th>
+                <th scope="col">Preço Unitário</th>
+                <th scope="col" class="text-center">Quantidade</th>
+                <th scope="col" class="text-end">Subtotal</th>
+                <th scope="col" class="text-center">Ação</th>
             </tr>
         </thead>
         <tbody>
             <?php $total = 0; ?>
             <?php foreach ($carrinho as $item): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($item['especie']); ?></td>
-                    <td>R$ <?php echo number_format($item['preco'], 2, ',', '.'); ?></td>
-                    <td>
-                        <form action="/carrinho/remove" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="<?php echo $item['id']; ?>">
+                    <td><?php echo htmlspecialchars($item['dados']['especie']); ?></td>
+                    <td>R$ <?php echo number_format($item['dados']['preco'], 2, ',', '.'); ?></td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <form action="/index.php/carrinho/update" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="<?php echo $item['dados']['id']; ?>">
+                                <input type="hidden" name="action" value="decrease">
+                                <button type="submit" class="btn btn-sm btn-secondary">-</button>
+                            </form>
+                            <span class="mx-2"><?php echo $item['quantidade']; ?></span>
+                            <form action="/index.php/carrinho/update" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="<?php echo $item['dados']['id']; ?>">
+                                <input type="hidden" name="action" value="increase">
+                                <button type="submit" class="btn btn-sm btn-secondary">+</button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="text-end">R$ <?php echo number_format($item['dados']['preco'] * $item['quantidade'], 2, ',', '.'); ?></td>
+                    <td class="text-center">
+                        <form action="/index.php/carrinho/remove" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="<?php echo $item['dados']['id']; ?>">
                             <button type="submit" class="btn btn-danger btn-sm">Remover</button>
                         </form>
                     </td>
                 </tr>
-                <?php $total += $item['preco']; ?>
+                <?php $total += $item['dados']['preco'] * $item['quantidade']; ?>
             <?php endforeach; ?>
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="1">Total</th>
-                <th>R$ <?php echo number_format($total, 2, ',', '.'); ?></th>
+                <th colspan="3">Total</th>
+                <th class="text-end">R$ <?php echo number_format($total, 2, ',', '.'); ?></th>
                 <th></th>
             </tr>
         </tfoot>
     </table>
     <div class="text-end">
-        <a href="/carrinho/checkout" class="btn btn-success">Finalizar Adoção</a>
+        <a href="/index.php/carrinho/checkout" class="btn btn-success">Finalizar Adoção</a>
     </div>
 <?php endif; ?>
 
