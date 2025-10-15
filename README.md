@@ -154,7 +154,7 @@ cd e-commerce
 
 Integrantes:
 
-Lucas de Fiori Viudes
-Vitto Lorenzo Barboza Legnani
-Lucas Gozer Lopes
+Lucas de Fiori Viudes.
+Vitto Lorenzo Barboza Legnani.
+Lucas Gozer Lopes.
 
