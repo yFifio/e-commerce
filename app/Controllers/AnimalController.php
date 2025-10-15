@@ -13,7 +13,6 @@ class AnimalController {
         $animalModel = new Animal();
         $animal = $animalModel->find($id);
 
-        // A view agora será carregada corretamente a partir deste caminho
         require_once __DIR__ . '/../Views/animal/show.php'; 
     }
 }
