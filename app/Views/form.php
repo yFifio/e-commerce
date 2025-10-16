@@ -14,7 +14,7 @@
                     if (isset($_SESSION['form_feedback'])) {
                         $feedback = $_SESSION['form_feedback'];
                         echo '<div class="alert alert-' . htmlspecialchars($feedback['type']) . '" role="alert">' . htmlspecialchars($feedback['message']) . '</div>';
-                        unset($_SESSION['form_feedback']); // Limpa a mensagem após exibir
+                        unset($_SESSION['form_feedback']);
                     }
                     ?>
 

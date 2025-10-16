@@ -1,4 +1,4 @@
-    </div> <!-- Fecha o .container aberto no header -->
+    </div>
 </main>
     <footer class="bg-dark text-white mt-auto py-4">
         <div class="container-fluid px-5">
@@ -37,12 +37,9 @@
         </div>
     </footer>
 
-    <!-- Inclua o Font Awesome para os ícones (se ainda não estiver incluído no header) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" integrity="sha512-u3fPA7V8qQmhBPNT5qu9LzK0JsP38yVWCEs3YfsKiB4V1eKh5JOCMGCUTKMPDDvA+gScy8BUPLVR2sLdZLIO3A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Seus scripts JS personalizados -->
     <script src="/js/dashboard.js"></script>
 </body>
 </html>
