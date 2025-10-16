@@ -123,6 +123,22 @@ switch ($route) {
         $controller->showAdocaoSucesso();
         break;
 
+    case 'contato':
+        loadController('ContatoController');
+        $controller = new ContatoController();
+        if ($method == 'POST') {
+            $controller->send();
+        } else {
+            $controller->showForm();
+        }
+        break;
+
+    case 'admin/contato':
+        loadController('ContatoController');
+        $controller = new ContatoController();
+        $controller->showMessages();
+        break;
+
     default:
         http_response_code(404);
         echo "Página não encontrada.";

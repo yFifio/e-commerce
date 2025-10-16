@@ -1,5 +1,8 @@
 <?php require __DIR__ . '/layouts/header.php'; ?>
-<h2>Dashboard de Indicadores</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Dashboard de Indicadores</h2>
+    <a href="/admin/contato" class="btn btn-info">Ver Mensagens de Contato</a>
+</div>
 <div class="row">
     <div class="col-md-8">
         <canvas id="myChart"></canvas>

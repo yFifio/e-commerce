@@ -11,7 +11,6 @@
                     <h5>Links</h5>
                     <ul class="list-unstyled">
                         <li><a href="/" class="text-white text-decoration-none">Home</a></li>
-                        <li><a href="/animais" class="text-white text-decoration-none">Animais</a></li>
                         <li><a href="/contato" class="text-white text-decoration-none">Contato</a></li>
                     </ul>
                 </div>
