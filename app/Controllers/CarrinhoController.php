@@ -107,7 +107,7 @@ class CarrinhoController {
             exit();
         }
 
-        $labels = ['cartao_credito' => 'Cartão de Crédito', 'boleto' => 'Boleto Bancário'];
+        $labels = ['cartao_credito' => 'Cartão de Crédito', 'boleto' => 'Boleto Bancário', 'pix' => 'PIX'];
         $metodo_pagamento_label = $labels[$metodo_pagamento] ?? 'Desconhecido';
 
         require_once __DIR__ . '/../Views/pagamento.php';
@@ -152,11 +152,13 @@ class CarrinhoController {
             
             $numero_cartao_final = $numero_cartao ? substr($numero_cartao, -4) : null;
 
+            $transacao_id = 'simulacao_' . uniqid();
+
             $stmt = $this->db->prepare(
                 "INSERT INTO pagamentos (adocao_id, metodo_pagamento, status_pagamento, transacao_id, nome_cartao, numero_cartao_final, validade_cartao) 
                  VALUES (?, ?, ?, ?, ?, ?, ?)"
             );
-            $stmt->execute([$adocao_id, $metodo_pagamento, 'aprovado', 'simulacao_' . uniqid(), $nome_cartao, $numero_cartao_final, $validade_cartao]);
+            $stmt->execute([$adocao_id, $metodo_pagamento, 'aprovado', $transacao_id, $nome_cartao, $numero_cartao_final, $validade_cartao]);
 
             $this->db->commit();
             unset($_SESSION['carrinho']);

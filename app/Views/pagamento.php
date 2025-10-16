@@ -37,6 +37,13 @@
                     <p>Ao clicar em "Confirmar Adoção", um boleto simulado será gerado.</p>
                     <p>Em um sistema real, você seria redirecionado para a página de visualização do boleto.</p>
                 </div>
+            <?php elseif ($metodo_pagamento === 'pix'): ?>
+                <div class="alert alert-info text-center">
+                    <p>Para concluir, faça um PIX para a chave abaixo ou leia o QR Code.</p>
+                    <p><strong>Chave PIX (Celular):</strong> (44) 99904-3230</p>
+                    <img src="/imagem/QRcodejpg.jpg" alt="QR Code PIX" class="img-fluid my-3" style="max-width: 150px;">
+                    <p class="small">Este é um QR Code de simulação. Após a confirmação, clique no botão abaixo.</p>
+                </div>
             <?php endif; ?>
 
             <hr class="my-4">
