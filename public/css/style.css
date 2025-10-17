@@ -1,268 +1,234 @@
-:root {
-  --primary-color: #2d6a4f;
-  --secondary-color: #ffb703;
-  --background-color: #f4f1de;
-  --surface-color: #ffffff;
-  --text-color: #403d39;
-  --light-text-color: #ffffff;
-  --border-color: #dee2e6;
-  --success-color: #28a745;
-  --error-color: #dc3545;
-
-  --font-family: "Poppins", sans-serif;
-  --border-radius: 8px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --transition: all 0.3s ease-in-out;
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@keyframes rasta-glow {
+  0% {
+    box-shadow: 0 0 8px #009b48, 0 0 12px #fcd116, 0 0 16px #ce1126;
+  }
+  50% {
+    box-shadow: 0 0 16px #ce1126, 0 0 24px #fcd116, 0 0 32px #009b48;
+  }
+  100% {
+    box-shadow: 0 0 8px #009b48, 0 0 12px #fcd116, 0 0 16px #ce1126;
+  }
+}
+
+:root {
+  --rasta-green: #009b48;
+  --rasta-yellow: #fcd116;
+  --rasta-red: #ce1126;
+  --text-color: #2c2c2c;
+  --background-light: #f5f5dc; /* Cor de linho/areia claro */
+  --surface-color: #ffffff;
+
+  --font-family: "Poppins", sans-serif;
+  --border-radius: 12px;
+  --shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease-in-out;
 }
 
 body {
   font-family: var(--font-family);
-  background-color: var(--background-color);
   color: var(--text-color);
-  line-height: 1.6;
+  background: linear-gradient(
+    -45deg,
+    var(--background-light),
+    #fafad2,
+    #fffacd,
+    var(--background-light)
+  );
+  background-size: 400% 400%;
+  animation: gradient-animation 20s ease infinite;
+}
+
+h2,
+h3 {
+  font-weight: 700;
+  color: var(--text-color);
 }
 
 h1,
-h2,
-h3 {
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-  font-weight: 600;
+.vehicle-card-content h3 a {
+  background: linear-gradient(
+    45deg,
+    var(--rasta-green),
+    var(--rasta-yellow),
+    var(--rasta-red)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-p {
-  margin-bottom: 1rem;
+.vehicle-card-content h3 a {
+  font-size: 1.5rem;
 }
 
 a {
-  color: var(--primary-color);
+  color: var(--rasta-green);
   text-decoration: none;
+  font-weight: 600;
   transition: var(--transition);
 }
 
 a:hover {
-  color: var(--secondary-color);
-  text-decoration: underline;
+  color: var(--rasta-red);
+  transform: translateY(-2px);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 2rem auto;
   padding: 0 2rem;
 }
 
 .main-nav {
-  background-color: var(--surface-color);
-  padding: 1rem 2rem;
-  box-shadow: var(--shadow);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: linear-gradient(
+    90deg,
+    var(--rasta-green),
+    var(--rasta-yellow),
+    var(--rasta-red)
+  );
+  padding: 0.8rem 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   position: sticky;
   top: 0;
   z-index: 1000;
+  border-bottom: 3px solid var(--rasta-yellow);
 }
 
 .main-nav .logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.main-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-}
-
-.main-nav a {
-  font-weight: 500;
-  font-size: 1rem;
-  padding: 0.5rem 0;
-  position: relative;
-}
-
-.main-nav a::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--secondary-color);
+.main-nav .nav-link,
+.main-nav .dropdown-toggle {
+  color: #fff !important;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   transition: var(--transition);
 }
 
-.main-nav a:hover::after {
-  width: 100%;
+.main-nav .nav-link:hover,
+.main-nav .dropdown-toggle:hover {
+  transform: scale(1.1);
 }
 
 .btn {
-  display: inline-block;
-  padding: 0.8rem 1.5rem;
+  padding: 12px 28px;
   border: none;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  color: var(--light-text-color);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: center;
-  transition: var(--transition);
+  border-radius: 50px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(
+    45deg,
+    var(--rasta-red),
+    var(--rasta-yellow),
+    var(--rasta-green)
+  );
+  background-size: 200% 100%;
+  transition: background-position 0.5s ease, transform 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn:hover {
-  background-color: #1b4332;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(45, 106, 79, 0.4);
-  color: var(--light-text-color);
-  text-decoration: none;
-}
-
-.btn-secondary {
-  background-color: var(--secondary-color);
-}
-
-.btn-secondary:hover {
-  background-color: #fb8500;
-  box-shadow: 0 6px 15px rgba(255, 183, 3, 0.4);
-}
-
-.btn-danger {
-  background-color: var(--error-color);
-}
-.btn-danger:hover {
-  background-color: #c82333;
-  box-shadow: 0 6px 15px rgba(220, 53, 69, 0.4);
+  background-position: 100% 0;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  color: white;
 }
 
 .vehicle-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 2.5rem;
 }
 
 .vehicle-card {
   background-color: var(--surface-color);
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   transition: var(--transition);
+  border: 2px solid transparent;
 }
 
 .vehicle-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--rasta-yellow);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  animation: rasta-glow 1.5s infinite alternate;
 }
 
 .vehicle-card img {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.vehicle-card:hover img {
+  transform: scale(1.1);
 }
 
 .vehicle-card-content {
   padding: 1.5rem;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
+  text-align: center;
 }
 
-.vehicle-card-content h3 {
-  margin-top: 0;
+.vehicle-card-content p {
+  font-weight: 500;
+  color: #555;
 }
 
 .vehicle-card-content .price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--secondary-color);
-  margin-top: auto;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--rasta-green);
+  margin-block: 1rem;
 }
 
 .form-container {
-  max-width: 450px;
-  margin: 4rem auto;
-  padding: 2rem;
   background-color: var(--surface-color);
+  padding: 2.5rem;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  border-top: 10px solid;
+  border-image: linear-gradient(
+      90deg,
+      var(--rasta-green),
+      var(--rasta-yellow),
+      var(--rasta-red)
+    )
+    1;
 }
 
 .form-group input {
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-  transition: var(--transition);
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  padding: 12px;
 }
 
 .form-group input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.25);
-}
-
-.form-container .btn {
-  width: 100%;
-}
-
-.error-message {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 1rem;
-  border: 1px solid #f5c6cb;
-  border-radius: var(--border-radius);
-  margin-bottom: 1rem;
+  border-color: var(--rasta-green);
+  box-shadow: 0 0 10px rgba(0, 155, 72, 0.2);
 }
 
 .cart-item {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
   background-color: var(--surface-color);
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  margin-bottom: 1rem;
-}
-
-.cart-item img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: var(--border-radius);
-}
-
-.cart-item-info {
-  flex-grow: 1;
-}
-
-.cart-total {
-  margin-top: 2rem;
-  padding: 2rem;
-  background-color: var(--surface-color);
-  border-radius: var(--border-radius);
-  text-align: right;
-  font-size: 1.5rem;
-  font-weight: 700;
+  margin-bottom: 1.5rem;
 }
