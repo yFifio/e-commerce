@@ -119,14 +119,27 @@ class CarrinhoController {
             exit();
         }
 
+        $source = filter_input(INPUT_GET, 'source');
+
+        // Se a requisição vem do Mercado Pago, os dados de pagamento virão via GET.
+        if ($source === 'mp') {
+            $metodo_pagamento = 'mercadopago_' . filter_input(INPUT_GET, 'payment_type');
+            $transacao_id = filter_input(INPUT_GET, 'payment_id');
+            $status_pagamento = filter_input(INPUT_GET, 'status');
+        } else {
+            // Lógica antiga para pagamentos manuais via POST.
+            $metodo_pagamento = filter_input(INPUT_POST, 'metodo_pagamento', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $nome_cartao = filter_input(INPUT_POST, 'nome_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $numero_cartao = filter_input(INPUT_POST, 'numero_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $validade_cartao = filter_input(INPUT_POST, 'validade_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $numero_cartao_final = $numero_cartao ? substr($numero_cartao, -4) : null;
+            $transacao_id = 'simulacao_' . uniqid();
+            $status_pagamento = 'aprovado'; // Simulação sempre aprova.
+        }
+
         $carrinho = $_SESSION['carrinho'];
         $usuario_id = $_SESSION['usuario_id'];
         $total = array_sum(array_map(fn($item) => $item['dados']['preco'] * $item['quantidade'], $carrinho));
-        $metodo_pagamento = filter_input(INPUT_POST, 'metodo_pagamento', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-        $nome_cartao = filter_input(INPUT_POST, 'nome_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $numero_cartao = filter_input(INPUT_POST, 'numero_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $validade_cartao = filter_input(INPUT_POST, 'validade_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $this->db->beginTransaction();
 
@@ -150,15 +163,12 @@ class CarrinhoController {
                 $animalModel->decreaseStock($item['dados']['id'], $item['quantidade']);
             }
             
-            $numero_cartao_final = $numero_cartao ? substr($numero_cartao, -4) : null;
-
-            $transacao_id = 'simulacao_' . uniqid();
-
             $stmt = $this->db->prepare(
                 "INSERT INTO pagamentos (adocao_id, metodo_pagamento, status_pagamento, transacao_id, nome_cartao, numero_cartao_final, validade_cartao) 
                  VALUES (?, ?, ?, ?, ?, ?, ?)"
             );
-            $stmt->execute([$adocao_id, $metodo_pagamento, 'aprovado', $transacao_id, $nome_cartao, $numero_cartao_final, $validade_cartao]);
+            // Para o Mercado Pago, os campos de cartão não são preenchidos aqui.
+            $stmt->execute([$adocao_id, $metodo_pagamento, $status_pagamento, $transacao_id, $nome_cartao ?? null, $numero_cartao_final ?? null, $validade_cartao ?? null]);
 
             $this->db->commit();
             unset($_SESSION['carrinho']);

@@ -111,8 +111,15 @@ switch ($route) {
         $controller->finalizar();
         break;
 
+    case 'pagar-com-mercado-pago':
+        loadController('MercadoPagoController');
+        $controller = new MercadoPagoController();
+        $controller->createPreference();
+        break;
+
     case 'minhas-adocoes':
-        loadController('UsuarioController');
+        loadController('UsuarioControllMERCADO_PAGO_ACCESS_TOKEN="SEU_ACCESS_TOKEN_AQUI"
+        er');
         $controller = new UsuarioController();
         $controller->showAdocoes();
         break;
