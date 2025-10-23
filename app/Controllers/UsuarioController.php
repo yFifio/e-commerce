@@ -3,10 +3,6 @@ require_once __DIR__ . '/../Models/Adocao.php';
 
 class UsuarioController {
     public function showAdocoes() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
         if (!isset($_SESSION['usuario_id'])) {
             header('Location: /login');
             exit();
@@ -19,9 +15,6 @@ class UsuarioController {
     }
 
     public function showAdocaoSucesso() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
         if (!isset($_SESSION['usuario_id'])) {
             header('Location: /login');
             exit();

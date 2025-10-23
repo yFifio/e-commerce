@@ -118,8 +118,7 @@ switch ($route) {
         break;
 
     case 'minhas-adocoes':
-        loadController('UsuarioControllMERCADO_PAGO_ACCESS_TOKEN="SEU_ACCESS_TOKEN_AQUI"
-        er');
+        loadController('UsuarioController');
         $controller = new UsuarioController();
         $controller->showAdocoes();
         break;

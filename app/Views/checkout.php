@@ -43,6 +43,10 @@
                     <input id="pix" name="metodo_pagamento" type="radio" class="form-check-input" value="pix" required>
                     <label class="form-check-label" for="pix">PIX</label>
                 </div>
+                <div class="form-check">
+                    <input id="mercadopago" name="metodo_pagamento" type="radio" class="form-check-input" value="mercadopago" required>
+                    <label class="form-check-label" for="mercadopago">Mercado Pago (Cartão, PIX, etc)</label>
+                </div>
             </div>
             <hr class="my-4">
             <button class="w-100 btn btn-primary btn-lg" type="submit">Continuar para pagamento</button>

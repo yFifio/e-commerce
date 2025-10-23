@@ -6,9 +6,6 @@ class CarrinhoController {
     private $db;
 
     public function __construct() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
         $this->db = Database::getInstance()->getConnection();
     }
 
@@ -107,6 +104,11 @@ class CarrinhoController {
             exit();
         }
 
+        if ($metodo_pagamento === 'mercadopago') {
+            header('Location: /index.php/pagar-com-mercado-pago');
+            exit();
+        }
+
         $labels = ['cartao_credito' => 'Cartão de Crédito', 'boleto' => 'Boleto Bancário', 'pix' => 'PIX'];
         $metodo_pagamento_label = $labels[$metodo_pagamento] ?? 'Desconhecido';
 
@@ -121,20 +123,18 @@ class CarrinhoController {
 
         $source = filter_input(INPUT_GET, 'source');
 
-        // Se a requisição vem do Mercado Pago, os dados de pagamento virão via GET.
         if ($source === 'mp') {
             $metodo_pagamento = 'mercadopago_' . filter_input(INPUT_GET, 'payment_type');
             $transacao_id = filter_input(INPUT_GET, 'payment_id');
             $status_pagamento = filter_input(INPUT_GET, 'status');
         } else {
-            // Lógica antiga para pagamentos manuais via POST.
             $metodo_pagamento = filter_input(INPUT_POST, 'metodo_pagamento', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $nome_cartao = filter_input(INPUT_POST, 'nome_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $numero_cartao = filter_input(INPUT_POST, 'numero_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $validade_cartao = filter_input(INPUT_POST, 'validade_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $numero_cartao_final = $numero_cartao ? substr($numero_cartao, -4) : null;
             $transacao_id = 'simulacao_' . uniqid();
-            $status_pagamento = 'aprovado'; // Simulação sempre aprova.
+            $status_pagamento = 'aprovado';
         }
 
         $carrinho = $_SESSION['carrinho'];
@@ -167,7 +167,6 @@ class CarrinhoController {
                 "INSERT INTO pagamentos (adocao_id, metodo_pagamento, status_pagamento, transacao_id, nome_cartao, numero_cartao_final, validade_cartao) 
                  VALUES (?, ?, ?, ?, ?, ?, ?)"
             );
-            // Para o Mercado Pago, os campos de cartão não são preenchidos aqui.
             $stmt->execute([$adocao_id, $metodo_pagamento, $status_pagamento, $transacao_id, $nome_cartao ?? null, $numero_cartao_final ?? null, $validade_cartao ?? null]);
 
             $this->db->commit();

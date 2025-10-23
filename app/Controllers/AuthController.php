@@ -23,7 +23,6 @@ class AuthController {
         $usuario = $usuarioModel->findByEmail($email);
 
         if ($usuario && password_verify($senha, $usuario['senha'])) {
-            session_start();
             $_SESSION['usuario_id'] = $usuario['id'];
             $_SESSION['usuario_nome'] = $usuario['nome'];
             $_SESSION['user_role'] = $usuario['role'];
@@ -34,7 +33,6 @@ class AuthController {
     }
 
     public function logout() {
-        session_start();
         session_destroy();
         header('Location: /');
     }

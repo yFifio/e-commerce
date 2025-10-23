@@ -4,9 +4,6 @@ require_once __DIR__ . '/../Models/Usuario.php';
 
 class DashboardController {
     public function __construct() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
             http_response_code(403);
             die("Acesso negado. Você não tem permissão para ver esta página.");
