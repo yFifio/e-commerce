@@ -1,7 +1,3 @@
-Com certeza\! O README foi atualizado com os nomes dos integrantes.
-
----
-
 # **Exotic Pets Emporium**
 
 ## **Descrição do Propósito do Sistema**
