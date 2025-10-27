@@ -50,4 +50,10 @@ class Animal extends Model {
         $stmt->execute([$especie, $currentId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function create($especie, $origem, $descricao, $preco, $estoque, $imagem_url, $data_nascimento) {
+        $sql = "INSERT INTO animais (especie, origem, descricao, preco, estoque, imagem_url, data_nascimento) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$especie, $origem, $descricao, $preco, $estoque, $imagem_url, $data_nascimento]);
+    }
 }

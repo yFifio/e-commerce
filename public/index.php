@@ -145,6 +145,18 @@ switch ($route) {
         $controller->showMessages();
         break;
 
+    case 'admin/animais/novo':
+        loadController('AdminAnimalController');
+        $controller = new AdminAnimalController();
+        $controller->showAddForm();
+        break;
+
+    case 'admin/animais/create':
+        loadController('AdminAnimalController');
+        $controller = new AdminAnimalController();
+        $controller->create();
+        break;
+
     default:
         http_response_code(404);
         echo "Página não encontrada.";
