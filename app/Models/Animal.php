@@ -9,6 +9,13 @@ class Animal extends Model {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function search(string $term) {
+        $searchTerm = '%' . $term . '%';
+        $stmt = $this->db->prepare("SELECT * FROM animais WHERE (especie LIKE ? OR origem LIKE ?) AND estoque > 0 ORDER BY id DESC");
+        $stmt->execute([$searchTerm, $searchTerm]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function find(int $id) {
         $stmt = $this->db->prepare("SELECT * FROM animais WHERE id = ?");
         $stmt->execute([$id]);

@@ -38,7 +38,7 @@
                     <td class="text-center">
                         <form action="/index.php/carrinho/remove" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="<?php echo $item['dados']['id']; ?>">
-                            <button type="submit" class="btn btn-link text-danger p-0" title="Remover item" style="vertical-align: middle;">
+                            <button type="submit" class="btn-link text-danger bg-transparent border-0 p-0" title="Remover item" style="vertical-align: middle;">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>

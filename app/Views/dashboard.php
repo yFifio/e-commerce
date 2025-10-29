@@ -188,6 +188,16 @@
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-rasta-black">Ações Rápidas</h6>
+                </div>
+                <div class="card-body">
+                    <a href="/admin/animais/novo" class="btn w-100" style="background-color: var(--rasta-green); color: white;">
+                        <i class="fas fa-plus-circle me-2"></i>Adicionar Novo Animal
+                    </a>
+                </div>
+            </div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-rasta-black">Adoções Recentes</h6>
                 </div>
                 <div class="card-body p-0">
