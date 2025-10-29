@@ -144,11 +144,11 @@ class CarrinhoController {
         $this->db->beginTransaction();
 
         try {
-            $stmt = $this->db->prepare("INSERT INTO adocoes (usuario_id, valor_total) VALUES (?, ?)");
-            $stmt->execute([$usuario_id, $total]);
+            $stmt = $this->db->prepare("INSERT INTO adocoes (usuario_id, valor_total) VALUES (?, ?)");            $stmt->execute([$usuario_id, $total]);
             $adocao_id = $this->db->lastInsertId();
 
             $animalModel = new Animal();
+        
             foreach ($carrinho as $id => $item) {
                 $animalAtual = $animalModel->find($id);
                 if (!$animalAtual || $animalAtual['estoque'] < $item['quantidade']) {
@@ -156,7 +156,6 @@ class CarrinhoController {
                 }
             }
 
-            $animalModel = new Animal();
             foreach ($carrinho as $item) {
                 $stmt = $this->db->prepare("INSERT INTO adocao_itens (adocao_id, animal_id, preco_unitario, quantidade) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$adocao_id, $item['dados']['id'], $item['dados']['preco'], $item['quantidade']]);

@@ -10,7 +10,7 @@ abstract class Model {
 
     protected function getDateWhereClause(string $period, string $dateColumn, ?string $startDate = null, ?string $endDate = null): string {
         if ($startDate && $endDate) {
-            // Adiciona +1 dia ao endDate para incluir o dia inteiro na busca (de 00:00 a 23:59)
+    
             return " WHERE $dateColumn >= '$startDate 00:00:00' AND $dateColumn < DATE_ADD('$endDate', INTERVAL 1 DAY)";
         } else {
             return match ($period) {
