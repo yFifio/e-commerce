@@ -13,4 +13,9 @@ class Usuario extends Model {
         $stmt->execute([$email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function countAll() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM usuarios");
+        return $stmt->fetchColumn();
+    }
 }

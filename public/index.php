@@ -145,6 +145,12 @@ switch ($route) {
         $controller->showMessages();
         break;
 
+    case 'admin/contato/delete':
+        loadController('ContatoController');
+        $controller = new ContatoController();
+        $controller->delete();
+        break;
+
     case 'admin/animais/novo':
         loadController('AdminAnimalController');
         $controller = new AdminAnimalController();

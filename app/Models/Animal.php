@@ -2,58 +2,58 @@
 require_once __DIR__ . '/Model.php';
 
 class Animal extends Model {
+    // O construtor e a propriedade $db são herdados de Model.php
+
     public function getAll() {
-        $searchTerm = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        
-        $sql = "SELECT * FROM animais WHERE estoque > 0";
-        $params = [];
-
-        if ($searchTerm) {
-            $sql .= " AND (especie LIKE :searchTermEspecie OR origem LIKE :searchTermOrigem)";
-            $params[':searchTermEspecie'] = '%' . $searchTerm . '%';
-            $params[':searchTermOrigem'] = '%' . $searchTerm . '%';
-        }
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
+        $stmt = $this->db->query("SELECT * FROM animais WHERE estoque > 0 ORDER BY id DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function find($id) {
-        $stmt = $this->db->prepare("SELECT * FROM animais WHERE id = :id");
-        $stmt->execute([':id' => $id]);
+    public function find(int $id) {
+        $stmt = $this->db->prepare("SELECT * FROM animais WHERE id = ?");
+        $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
-    public function getDashboardData() {
-        $query = "
-            SELECT
-                (SELECT COUNT(*) FROM animais) as total_animais,
-                (SELECT COUNT(*) FROM usuarios) as total_usuarios,
-                (SELECT COUNT(*) FROM adocoes) as total_adocoes,
-                (SELECT SUM(valor_total) FROM adocoes) as faturamento_total
-        ";
-        $stmt = $this->db->prepare($query);
+
+    public function getRelated(string $especie, int $excludeId, int $limit = 3) {
+        $stmt = $this->db->prepare("SELECT * FROM animais WHERE especie = ? AND id != ? AND estoque > 0 ORDER BY RAND() LIMIT ?");
+        $stmt->bindValue(1, $especie, PDO::PARAM_STR);
+        $stmt->bindValue(2, $excludeId, PDO::PARAM_INT);
+        $stmt->bindValue(3, $limit, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function decreaseStock($id, $quantity) {
-        $stmt = $this->db->prepare("UPDATE animais SET estoque = estoque - ? WHERE id = ?");
-        return $stmt->execute([$quantity, $id]);
-    }
-
-    public function getRelated($especie, $currentId) {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM animais WHERE especie = ? AND id != ? AND estoque > 0 ORDER BY RAND() LIMIT 3"
-        );
-        $stmt->execute([$especie, $currentId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function create($especie, $origem, $descricao, $preco, $estoque, $imagem_url, $data_nascimento) {
-        $sql = "INSERT INTO animais (especie, origem, descricao, preco, estoque, imagem_url, data_nascimento) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public function create(string $especie, ?string $origem, ?string $descricao, float $preco, int $estoque, ?string $imagem_url, string $data_nascimento) {
+        $sql = "INSERT INTO animais (especie, origem, descricao, preco, estoque, imagem_url, data_nascimento, data_cadastro) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$especie, $origem, $descricao, $preco, $estoque, $imagem_url, $data_nascimento]);
+    }
+
+    public function decreaseStock(int $id, int $quantity) {
+        $stmt = $this->db->prepare("UPDATE animais SET estoque = estoque - ? WHERE id = ? AND estoque >= ?");
+        return $stmt->execute([$quantity, $id, $quantity]);
+    }
+
+    public function countAll() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM animais WHERE estoque > 0");
+        return $stmt->fetchColumn();
+    }
+
+    public function getRecentlyAdded(int $limit = 5, string $period = 'all_time', ?string $startDate = null, ?string $endDate = null) {
+        $whereClause = $this->getDateWhereClause($period, 'data_cadastro', $startDate, $endDate);
+
+        $sql = "
+            SELECT id, especie, imagem_url, data_nascimento 
+            FROM animais"
+            . $whereClause .
+            " ORDER BY data_cadastro DESC 
+            LIMIT ?";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

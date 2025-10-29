@@ -46,4 +46,25 @@ class ContatoController {
 
         require_once __DIR__ . '/../Views/mensagens.php';
     }
+
+    public function delete() {
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+            http_response_code(403);
+            die("Acesso negado.");
+        }
+
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+
+        if (!$id) {
+            header('Location: /admin/contato');
+            exit();
+        }
+
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("DELETE FROM contato_mensagens WHERE id = ?");
+        $stmt->execute([$id]);
+
+        header('Location: /admin/contato');
+        exit();
+    }
 }

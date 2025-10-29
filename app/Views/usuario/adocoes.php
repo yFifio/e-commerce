@@ -20,7 +20,16 @@
                     <tr>
                         <th scope="row"><?php echo htmlspecialchars($adocao['id']); ?></th>
                         <td><?php echo date("d/m/Y H:i", strtotime($adocao['data_adocao'])); ?></td>
-                        <td><?php echo htmlspecialchars($adocao['itens']); ?></td>
+                        <td>
+                            <ul class="list-unstyled mb-0">
+                                <?php foreach ($adocao['itens'] as $item): ?>
+                                    <li>
+                                        <?php echo htmlspecialchars($item['quantidade']); ?>x <?php echo htmlspecialchars($item['especie']); ?>
+                                        (R$ <?php echo number_format($item['preco_unitario'], 2, ',', '.'); ?> cada)
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </td>
                         <td>R$ <?php echo number_format($adocao['valor_total'], 2, ',', '.'); ?></td>
                     </tr>
                 <?php endforeach; ?>

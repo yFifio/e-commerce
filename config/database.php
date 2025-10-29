@@ -15,7 +15,7 @@ class Database {
             $dsn = "mysql:host=" . self::DB_HOST . ";dbname=" . self::DB_NAME . ";charset=" . self::DB_CHARSET;
             $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Útil para não precisar especificar sempre
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, 
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ];
             $this->conn = new PDO($dsn, self::DB_USER, self::DB_PASS, $options);
