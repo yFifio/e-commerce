@@ -33,88 +33,95 @@ Selecione o banco de dados e-comercce e execute os scripts SQL abaixo na aba "SQ
 IMPORTANTE: Os scripts de "Recursos Avançados" (Function, Trigger, Procedure) devem ser colados e executados um de cada vez, pois eles usam a sintaxe DELIMITER.
 
 Scripts SQL
+
 1. Criação das Tabelas Principais
-SQL
+   SQL
 
 -- Tabela de Usuários
 CREATE TABLE `usuarios` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `nome` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL UNIQUE,
-  `senha` VARCHAR(255) NOT NULL,
-  `role` VARCHAR(50) NOT NULL DEFAULT 'cliente',
-  `data_cadastro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+`id` INT PRIMARY KEY AUTO_INCREMENT,
+`nome` VARCHAR(255) NOT NULL,
+`email` VARCHAR(255) NOT NULL UNIQUE,
+`senha` VARCHAR(255) NOT NULL,
+`role` VARCHAR(50) NOT NULL DEFAULT 'cliente',
+`data_cadastro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela de Animais
 CREATE TABLE `animais` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `especie` VARCHAR(100) NOT NULL,
-  `origem` VARCHAR(100),
-  `data_nascimento` DATE,
-  `preco` DECIMAL(10, 2) NOT NULL,
-  `estoque` INT NOT NULL DEFAULT 0,
-  `descricao` TEXT,
-  `imagem_url` VARCHAR(255),
-  `data_cadastro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+`id` INT PRIMARY KEY AUTO_INCREMENT,
+`especie` VARCHAR(100) NOT NULL,
+`origem` VARCHAR(100),
+`data_nascimento` DATE,
+`preco` DECIMAL(10, 2) NOT NULL,
+`estoque` INT NOT NULL DEFAULT 0,
+`descricao` TEXT,
+`imagem_url` VARCHAR(255),
+`data_cadastro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela de Adoções
 CREATE TABLE `adocoes` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `usuario_id` INT NOT NULL,
-  `valor_total` DECIMAL(10, 2) NOT NULL,
-  `data_adocao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
+`id` INT PRIMARY KEY AUTO_INCREMENT,
+`usuario_id` INT NOT NULL,
+`valor_total` DECIMAL(10, 2) NOT NULL,
+`data_adocao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+`endereco_logradouro` VARCHAR(255) DEFAULT NULL,
+`endereco_numero` VARCHAR(50) DEFAULT NULL,
+`endereco_complemento` VARCHAR(100) DEFAULT NULL,
+`endereco_bairro` VARCHAR(100) DEFAULT NULL,
+`endereco_cidade` VARCHAR(100) DEFAULT NULL,
+`endereco_estado` VARCHAR(50) DEFAULT NULL,
+`endereco_cep` VARCHAR(20) DEFAULT NULL,
+FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela de Itens da Adoção
 CREATE TABLE `adocao_itens` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `adocao_id` INT NOT NULL,
-  `animal_id` INT NOT NULL,
-  `quantidade` INT NOT NULL DEFAULT 1,
-  `preco_unitario` DECIMAL(10, 2) NOT NULL,
-  FOREIGN KEY (adocao_id) REFERENCES adocoes (id) ON DELETE CASCADE,
-  FOREIGN KEY (animal_id) REFERENCES animais (id) ON DELETE RESTRICT
+`id` INT PRIMARY KEY AUTO_INCREMENT,
+`adocao_id` INT NOT NULL,
+`animal_id` INT NOT NULL,
+`quantidade` INT NOT NULL DEFAULT 1,
+`preco_unitario` DECIMAL(10, 2) NOT NULL,
+FOREIGN KEY (adocao_id) REFERENCES adocoes (id) ON DELETE CASCADE,
+FOREIGN KEY (animal_id) REFERENCES animais (id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela de Pagamentos
 CREATE TABLE `pagamentos` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `adocao_id` INT NOT NULL,
-  `metodo_pagamento` VARCHAR(50) NOT NULL,
-  `status_pagamento` VARCHAR(50) NOT NULL,
-  `transacao_id` VARCHAR(255) DEFAULT NULL,
-  `nome_cartao` VARCHAR(255) DEFAULT NULL,
-  `numero_cartao_final` VARCHAR(4) DEFAULT NULL,
-  `validade_cartao` VARCHAR(7) DEFAULT NULL,
-  `data_pagamento` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (adocao_id) REFERENCES adocoes(id) ON DELETE CASCADE
+`id` INT PRIMARY KEY AUTO_INCREMENT,
+`adocao_id` INT NOT NULL,
+`metodo_pagamento` VARCHAR(50) NOT NULL,
+`status_pagamento` VARCHAR(50) NOT NULL,
+`transacao_id` VARCHAR(255) DEFAULT NULL,
+`nome_cartao` VARCHAR(255) DEFAULT NULL,
+`numero_cartao_final` VARCHAR(4) DEFAULT NULL,
+`validade_cartao` VARCHAR(7) DEFAULT NULL,
+`data_pagamento` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (adocao_id) REFERENCES adocoes(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela de Mensagens de Contato
 CREATE TABLE `contato_mensagens` (
-  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `nome` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `assunto` VARCHAR(255) NOT NULL,
-  `mensagem` TEXT NOT NULL,
-  `data_envio` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `lido` TINYINT(1) NOT NULL DEFAULT 0
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+`nome` VARCHAR(255) NOT NULL,
+`email` VARCHAR(255) NOT NULL,
+`assunto` VARCHAR(255) NOT NULL,
+`mensagem` TEXT NOT NULL,
+`data_envio` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`lido` TINYINT(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabela de Auditoria de Preços
 CREATE TABLE `auditoria_precos` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `animal_id` INT NOT NULL,
-    `preco_antigo` DECIMAL(10, 2),
-    `preco_novo` DECIMAL(10, 2),
-    `usuario_modificacao` VARCHAR(255), 
-    `data_modificacao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (animal_id) REFERENCES animais(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-2. Criação de Índices (Otimização)
+`id` INT AUTO_INCREMENT PRIMARY KEY,
+`animal_id` INT NOT NULL,
+`preco_antigo` DECIMAL(10, 2),
+`preco_novo` DECIMAL(10, 2),
+`usuario_modificacao` VARCHAR(255),
+`data_modificacao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (animal_id) REFERENCES animais(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 2. Criação de Índices (Otimização)
 SQL
 
 -- Índices para buscas rápidas
@@ -122,8 +129,7 @@ CREATE INDEX idx_animais_busca ON animais(especie, origem);
 CREATE INDEX idx_adocoes_usuario_id ON adocoes(usuario_id);
 CREATE INDEX idx_adocao_itens_adocao_id ON adocao_itens(adocao_id);
 CREATE INDEX idx_adocao_itens_animal_id ON adocao_itens(animal_id);
-CREATE INDEX idx_pagamentos_adocao_id ON pagamentos(adocao_id);
-3. Recursos Avançados de BD (Function, Trigger, Procedure)
+CREATE INDEX idx_pagamentos_adocao_id ON pagamentos(adocao_id); 3. Recursos Avançados de BD (Function, Trigger, Procedure)
 Aviso: Execute os 3 blocos abaixo separadamente no phpMyAdmin, um de cada vez, incluindo os comandos DELIMITER.
 
 A. Função (Verificar Estoque)
@@ -132,13 +138,13 @@ SQL
 
 DELIMITER $$
 CREATE FUNCTION `fn_verifica_estoque`(
-    p_animal_id INT,
-    p_quantidade_desejada INT
+p_animal_id INT,
+p_quantidade_desejada INT
 )
 RETURNS BOOLEAN
 READS SQL DATA
 BEGIN
-    DECLARE v_estoque_atual INT;
+DECLARE v_estoque_atual INT;
 
     SELECT estoque INTO v_estoque_atual
     FROM animais
@@ -149,6 +155,7 @@ BEGIN
     ELSE
         RETURN FALSE;
     END IF;
+
 END$$
 DELIMITER ;
 B. Trigger (Auditoria de Preços)
@@ -193,8 +200,7 @@ BEGIN
     END WHILE;
     SELECT CONCAT(p_quantidade_inserir, ' animais de teste inseridos.') AS Resultado;
 END$$
-DELIMITER ;
-4. Inserir Dados Iniciais
+DELIMITER ; 4. Inserir Dados Iniciais
 SQL
 
 -- Inserir Usuário Administrador (Senha: admin)
@@ -203,7 +209,7 @@ INSERT INTO `usuarios` (`nome`, `email`, `senha`, `role`) VALUES
 
 -- Inserir Animais
 INSERT INTO `animais` (especie, origem, data_nascimento, preco, estoque, imagem_url, descricao)
-VALUES 
+VALUES
 ('Agama Cabeça Vermelha', 'África', '2022-08-15', 800.00, 3, 'agama-cabeça-vermelha.jpg', 'A Agama Cabeça Vermelha é um réptil africano conhecido por sua coloração vibrante...'),
 ('Arara Azul', 'Brasil', '2021-09-20', 3500.00, 2, 'arara-azul.webp', 'A Arara Azul é uma das aves mais icônicas do Brasil...'),
 ('Arara Vermelha', 'Brasil', '2022-05-11', 3200.00, 1, 'Arara-Vermelha.jpg', 'A Arara Vermelha é uma ave exuberante de penas vermelhas e azuis...'),

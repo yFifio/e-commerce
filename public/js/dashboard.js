@@ -2,7 +2,7 @@ window.addEventListener("load", function () {
   const periodFilter = document.getElementById("period-filter");
   const datepickerButton = document.getElementById("datepicker-button");
   const chartCanvas = document.getElementById("myChart");
-  let datepickerLabel = null; // Inicializa como null
+  let datepickerLabel = null;
   if (!chartCanvas) return;
 
   const ctx = chartCanvas.getContext("2d");
@@ -34,7 +34,6 @@ window.addEventListener("load", function () {
       }
       const data = await response.json();
 
-      // 1. Atualizar os cards de resumo
       document.getElementById("faturamento-total").textContent = formatCurrency(
         data.faturamento_total
       );
@@ -45,7 +44,6 @@ window.addEventListener("load", function () {
       document.getElementById("total-messages").textContent =
         data.total_messages;
 
-      // 2. Atualizar lista de adoções recentes
       const adoptionsList = document.getElementById("recent-adoptions-list");
       adoptionsList.innerHTML = "";
       if (data.recent_adoptions && data.recent_adoptions.length > 0) {
@@ -72,7 +70,6 @@ window.addEventListener("load", function () {
           '<li class="list-group-item text-muted">Nenhuma adoção recente no período.</li>';
       }
 
-      // 3. Atualizar lista de animais recentes
       const animalsList = document.getElementById("recent-animals-list");
       animalsList.innerHTML = "";
       if (data.recent_animals && data.recent_animals.length > 0) {
@@ -101,7 +98,6 @@ window.addEventListener("load", function () {
           '<li class="list-group-item text-muted">Nenhum animal adicionado recentemente.</li>';
       }
 
-      // 4. Atualizar o gráfico
       const chartData = {
         labels: ["Adoções", "Animais Disponíveis", "Usuários"],
         datasets: [
@@ -109,9 +105,9 @@ window.addEventListener("load", function () {
             label: "Visão Geral",
             data: [data.total_adocoes, data.total_animais, data.total_usuarios],
             backgroundColor: [
-              "rgba(0, 158, 73, 0.8)", // Verde Rasta
-              "rgba(252, 218, 13, 0.8)", // Amarelo Rasta
-              "rgba(206, 17, 38, 0.8)", // Vermelho Rasta
+              "rgba(0, 158, 73, 0.8)",
+              "rgba(252, 218, 13, 0.8)",
+              "rgba(206, 17, 38, 0.8)",
             ],
             borderColor: ["#009E49", "#FCDA0D", "#CE1126"],
             borderWidth: 1,
@@ -124,7 +120,7 @@ window.addEventListener("load", function () {
         myChart.update();
       } else {
         myChart = new Chart(ctx, {
-          type: "doughnut", // Gráfico de Rosca
+          type: "doughnut",
           data: chartData,
           options: {
             responsive: true,
@@ -144,12 +140,9 @@ window.addEventListener("load", function () {
     }
   };
 
-  // Previne a dupla inicialização do Litepicker
   if (datepickerButton && !datepickerButton.hasOwnProperty("_litepicker")) {
-    // Atribui datepickerLabel APENAS se datepickerButton existir
     datepickerLabel = datepickerButton.querySelector("span");
 
-    // Inicializa o Litepicker
     const picker = new Litepicker({
       element: datepickerButton,
       singleMode: false,
@@ -164,14 +157,11 @@ window.addEventListener("load", function () {
         apply: "Aplicar",
       },
       setup: (picker) => {
-        // Evento 'selected': Disparado quando o usuário seleciona um intervalo de datas.
         picker.on("selected", (date1, date2) => {
           selectedStartDate = date1.format("YYYY-MM-DD");
           selectedEndDate = date2.format("YYYY-MM-DD");
-          // Define o filtro de período para 'all_time' para não conflitar e passa as datas
           periodFilter.value = "all_time";
           if (datepickerLabel) {
-            // Garante que datepickerLabel existe antes de usar
             datepickerLabel.textContent = `${date1.format(
               "DD/MM"
             )} - ${date2.format("DD/MM/YY")}`;
@@ -183,10 +173,8 @@ window.addEventListener("load", function () {
           );
         });
 
-        // Evento 'show': Disparado quando o calendário está prestes a ser exibido.
-        // Usado aqui apenas para aplicar o estilo.
         picker.on("show", () => {
-          const container = document.querySelector(".litepicker"); // Garante que o container do litepicker existe
+          const container = document.querySelector(".litepicker");
           if (container) {
             container.style.setProperty(
               "--litepicker-day-color-in-range",
@@ -211,11 +199,9 @@ window.addEventListener("load", function () {
   }
 
   periodFilter.addEventListener("change", (e) => {
-    // Limpa as datas do calendário ao usar o filtro de período
     selectedStartDate = null;
     selectedEndDate = null;
     if (datepickerLabel) {
-      // Garante que datepickerLabel existe antes de usar
       datepickerLabel.textContent = "Selecionar Período";
     }
     fetchDataAndUpdateDashboard(e.target.value);

@@ -99,6 +99,12 @@ switch ($route) {
         $controller->checkout();
         break;
 
+    case 'carrinho/endereco':
+        loadController('CarrinhoController');
+        $controller = new CarrinhoController();
+        $controller->showEnderecoForm();
+        break;
+
     case 'pagamento':
         loadController('CarrinhoController');
         $controller = new CarrinhoController();

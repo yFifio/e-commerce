@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../Models/Animal.php';
 require_once __DIR__ . '/../Models/Usuario.php';
-require_once __DIR__ . '/../Models/Adocao.php'; // Adicionado para buscar adoções recentes
-require_once __DIR__ . '/../Models/Contato.php'; // Adicionado para buscar mensagens
+require_once __DIR__ . '/../Models/Adocao.php';
+require_once __DIR__ . '/../Models/Contato.php';
 
 class DashboardController {
     private $db;
@@ -30,13 +30,11 @@ class DashboardController {
         $usuarioModel = new Usuario();
         $contatoModel = new Contato();
 
-        // Buscar cada dado de seu respectivo model
         $data = $adocaoModel->getDashboardSummary($period, $startDate, $endDate);
         $data['total_animais'] = $animalModel->countAll();
         $data['total_usuarios'] = $usuarioModel->countAll();
         $data['total_messages'] = $contatoModel->countByPeriod($period, $startDate, $endDate);
 
-        // Novas funcionalidades
         $data['recent_animals'] = $animalModel->getRecentlyAdded(5, $period, $startDate, $endDate);
         $data['recent_adoptions'] = $adocaoModel->getRecentAdoptions(5, $period, $startDate, $endDate);
 

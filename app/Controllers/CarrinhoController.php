@@ -92,13 +92,31 @@ class CarrinhoController {
         require_once __DIR__ . '/../Views/checkout.php';
     }
 
-    public function showPagamento() {
+    public function showEnderecoForm() {
         if (!isset($_SESSION['usuario_id']) || empty($_SESSION['carrinho'])) {
             header('Location: /index.php');
             exit();
         }
 
         $metodo_pagamento = filter_input(INPUT_POST, 'metodo_pagamento', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (!$metodo_pagamento) {
+            header('Location: /carrinho/checkout');
+            exit();
+        }
+
+        $_SESSION['metodo_pagamento'] = $metodo_pagamento;
+
+        require_once __DIR__ . '/../Views/endereco.php';
+    }
+
+    public function showPagamento() {
+        if (!isset($_SESSION['usuario_id']) || empty($_SESSION['carrinho'])) {
+            header('Location: /index.php');
+            exit();
+        }
+
+        $metodo_pagamento = $_SESSION['metodo_pagamento'] ?? filter_input(INPUT_POST, 'metodo_pagamento', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        
         if (!$metodo_pagamento) {
             header('Location: /index.php/carrinho/checkout');
             exit();
@@ -108,6 +126,16 @@ class CarrinhoController {
             header('Location: /index.php/pagar-com-mercado-pago');
             exit();
         }
+
+        $_SESSION['endereco'] = [
+            'cep' => filter_input(INPUT_POST, 'cep', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'logradouro' => filter_input(INPUT_POST, 'logradouro', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'numero' => filter_input(INPUT_POST, 'numero', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'complemento' => filter_input(INPUT_POST, 'complemento', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'bairro' => filter_input(INPUT_POST, 'bairro', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'cidade' => filter_input(INPUT_POST, 'cidade', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'estado' => filter_input(INPUT_POST, 'estado', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+        ];
 
         $labels = ['cartao_credito' => 'Cartão de Crédito', 'boleto' => 'Boleto Bancário', 'pix' => 'PIX'];
         $metodo_pagamento_label = $labels[$metodo_pagamento] ?? 'Desconhecido';
@@ -128,7 +156,7 @@ class CarrinhoController {
             $transacao_id = filter_input(INPUT_GET, 'payment_id');
             $status_pagamento = filter_input(INPUT_GET, 'status');
         } else {
-            $metodo_pagamento = filter_input(INPUT_POST, 'metodo_pagamento', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $metodo_pagamento = $_SESSION['metodo_pagamento'] ?? filter_input(INPUT_POST, 'metodo_pagamento', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $nome_cartao = filter_input(INPUT_POST, 'nome_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $numero_cartao = filter_input(INPUT_POST, 'numero_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $validade_cartao = filter_input(INPUT_POST, 'validade_cartao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -138,13 +166,24 @@ class CarrinhoController {
         }
 
         $carrinho = $_SESSION['carrinho'];
+        $endereco = $_SESSION['endereco'] ?? [];
         $usuario_id = $_SESSION['usuario_id'];
         $total = array_sum(array_map(fn($item) => $item['dados']['preco'] * $item['quantidade'], $carrinho));
 
         $this->db->beginTransaction();
 
         try {
-            $stmt = $this->db->prepare("INSERT INTO adocoes (usuario_id, valor_total) VALUES (?, ?)");            $stmt->execute([$usuario_id, $total]);
+            $stmt = $this->db->prepare(
+                "INSERT INTO adocoes (usuario_id, valor_total, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, endereco_cidade, endereco_estado, endereco_cep) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
+            $stmt->execute([
+                $usuario_id, $total,
+                $endereco['logradouro'] ?? null, $endereco['numero'] ?? null, $endereco['complemento'] ?? null,
+                $endereco['bairro'] ?? null, $endereco['cidade'] ?? null, $endereco['estado'] ?? null,
+                $endereco['cep'] ?? null
+            ]);
+
             $adocao_id = $this->db->lastInsertId();
 
             $animalModel = new Animal();
@@ -170,6 +209,8 @@ class CarrinhoController {
 
             $this->db->commit();
             unset($_SESSION['carrinho']);
+            unset($_SESSION['endereco']);
+            unset($_SESSION['metodo_pagamento']);
             header('Location: /index.php/adocao/sucesso?id=' . $adocao_id);
 
         } catch (Exception $e) {

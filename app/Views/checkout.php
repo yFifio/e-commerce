@@ -29,7 +29,7 @@
 
     <div class="col-md-5">
         <h4>Forma de Pagamento</h4>
-        <form action="/index.php/pagamento" method="post">
+        <form action="/carrinho/endereco" method="post">
             <div class="my-3">
                 <div class="form-check">
                     <input id="credito" name="metodo_pagamento" type="radio" class="form-check-input" value="cartao_credito" checked required>

@@ -52,4 +52,29 @@
     </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const numeroCartaoInput = document.getElementById('numero_cartao');
+    const validadeCartaoInput = document.getElementById('validade_cartao');
+
+    if (numeroCartaoInput) {
+        numeroCartaoInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            e.target.value = value;
+        });
+    }
+
+    if (validadeCartaoInput) {
+        validadeCartaoInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+});
+</script>
+
 <?php require __DIR__ . '/layouts/footer.php'; ?>
