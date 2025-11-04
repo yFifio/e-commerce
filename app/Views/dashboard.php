@@ -228,7 +228,6 @@
     </div>
 </div>
 
-<!-- Incluindo a biblioteca Chart.js e o script do dashboard -->
 <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="/js/dashboard.js"></script>

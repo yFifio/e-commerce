@@ -1,11 +1,12 @@
-window.addEventListener("load", function () {
+document.addEventListener("DOMContentLoaded", function () {
   const periodFilter = document.getElementById("period-filter");
   const datepickerButton = document.getElementById("datepicker-button");
   const chartCanvas = document.getElementById("myChart");
-  let datepickerLabel = null;
-  if (!chartCanvas) return;
 
-  const ctx = chartCanvas.getContext("2d");
+  const ctx = chartCanvas ? chartCanvas.getContext("2d") : null; // Obtém o contexto de forma segura
+  let datepickerLabel = datepickerButton
+    ? datepickerButton.querySelector("span")
+    : null;
   let selectedStartDate = null,
     selectedEndDate = null;
   let myChart = null;
@@ -140,8 +141,24 @@ window.addEventListener("load", function () {
     }
   };
 
-  if (datepickerButton && !datepickerButton.hasOwnProperty("_litepicker")) {
-    datepickerLabel = datepickerButton.querySelector("span");
+  /**
+   * Inicializa o seletor de datas (Litepicker) de forma robusta,
+   * aguardando a biblioteca ser carregada.
+   */
+  const initializeDatePicker = () => {
+    if (!datepickerButton) return;
+
+    // Verifica se a biblioteca Litepicker já foi carregada.
+    if (typeof Litepicker === "undefined") {
+      // Se não, tenta novamente em 100ms.
+      setTimeout(initializeDatePicker, 100);
+      return;
+    }
+
+    // Previne reinicialização se já houver uma instância.
+    if (datepickerButton.hasOwnProperty("_litepicker")) {
+      return;
+    }
 
     const picker = new Litepicker({
       element: datepickerButton,
@@ -172,31 +189,10 @@ window.addEventListener("load", function () {
             selectedEndDate
           );
         });
-
-        picker.on("show", () => {
-          const container = document.querySelector(".litepicker");
-          if (container) {
-            container.style.setProperty(
-              "--litepicker-day-color-in-range",
-              "rgba(0, 158, 73, 0.3)"
-            );
-            container.style.setProperty(
-              "--litepicker-is-start-color-bg",
-              "#CE1126"
-            );
-            container.style.setProperty(
-              "--litepicker-is-end-color-bg",
-              "#FCDA0D"
-            );
-            container.style.setProperty(
-              "--litepicker-is-end-color-text",
-              "#333"
-            );
-          }
-        });
       },
     });
-  }
+    datepickerButton._litepicker = picker;
+  };
 
   periodFilter.addEventListener("change", (e) => {
     selectedStartDate = null;
@@ -207,5 +203,6 @@ window.addEventListener("load", function () {
     fetchDataAndUpdateDashboard(e.target.value);
   });
 
+  initializeDatePicker();
   fetchDataAndUpdateDashboard();
 });
