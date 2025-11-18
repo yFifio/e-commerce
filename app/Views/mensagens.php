@@ -26,7 +26,7 @@
                                 <strong><?php echo htmlspecialchars($msg['assunto']); ?></strong>&nbsp;-&nbsp;
                                 <span class="text-muted">De: <?php echo htmlspecialchars($msg['nome']); ?> (<?php echo htmlspecialchars($msg['email']); ?>) em <?php echo date('d/m/Y H:i', strtotime($msg['data_envio'])); ?></span>
                             </button>
-                            <form action="/admin/contato/delete" method="POST" class="ms-2 d-flex align-items-center" onsubmit="return confirm('Tem certeza que deseja excluir esta mensagem?');">
+                            <form action="/index.php/admin/contato/delete" method="POST" class="ms-2 d-flex align-items-center" onsubmit="return confirm('Tem certeza que deseja excluir esta mensagem?');">
                                 <input type="hidden" name="id" value="<?php echo $msg['id']; ?>">
                                 <button type="submit" class="btn btn-sm btn-danger" title="Excluir mensagem">
                                     <i class="fas fa-trash"></i>
