@@ -57,15 +57,15 @@ class ContatoController {
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
         if (!$id) {
-            header('Location: /admin/contato');
+            header('Location: /index.php/admin/contato');
             exit();
         }
 
         $db = Database::getInstance()->getConnection();
         $stmt = $db->prepare("DELETE FROM contato_mensagens WHERE id = ?");
         $stmt->execute([$id]);
-
-        header('Location: /admin/contato');
+        $_SESSION['message_feedback'] = ['type' => 'success', 'message' => 'Mensagem excluída com sucesso.'];
+        header('Location: /index.php/admin/contato');
         exit();
     }
 }
