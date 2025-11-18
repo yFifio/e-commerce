@@ -4,14 +4,19 @@ require_once __DIR__ . '/Model.php';
 class Animal extends Model {
     // O construtor e a propriedade $db são herdados de Model.php
 
-    public function getAll() {
-        $stmt = $this->db->query("SELECT * FROM animais WHERE estoque > 0 ORDER BY id DESC");
+    public function getAll(bool $adminView = false) {
+        $sql = "SELECT * FROM animais";
+        if (!$adminView) { // Para a loja pública, mostrar apenas ativos e com estoque
+            $sql .= " WHERE estoque > 0 AND ativo = 1";
+        }
+        $sql .= " ORDER BY id DESC";
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function search(string $term) {
         $searchTerm = '%' . $term . '%';
-        $stmt = $this->db->prepare("SELECT * FROM animais WHERE (especie LIKE ? OR origem LIKE ?) AND estoque > 0 ORDER BY id DESC");
+        $stmt = $this->db->prepare("SELECT * FROM animais WHERE (especie LIKE ? OR origem LIKE ?) AND estoque > 0 AND ativo = 1 ORDER BY id DESC");
         $stmt->execute([$searchTerm, $searchTerm]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -23,7 +28,7 @@ class Animal extends Model {
     }
 
     public function getRelated(string $especie, int $excludeId, int $limit = 3) {
-        $stmt = $this->db->prepare("SELECT * FROM animais WHERE especie = ? AND id != ? AND estoque > 0 ORDER BY RAND() LIMIT ?");
+        $stmt = $this->db->prepare("SELECT * FROM animais WHERE especie = ? AND id != ? AND estoque > 0 AND ativo = 1 ORDER BY RAND() LIMIT ?");
         $stmt->bindValue(1, $especie, PDO::PARAM_STR);
         $stmt->bindValue(2, $excludeId, PDO::PARAM_INT);
         $stmt->bindValue(3, $limit, PDO::PARAM_INT);
@@ -31,11 +36,11 @@ class Animal extends Model {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function create(string $especie, ?string $origem, ?string $descricao, float $preco, int $estoque, ?string $imagem_url, string $data_nascimento) {
+    public function create(string $especie, ?string $origem, ?string $descricao, float $preco, int $estoque, ?string $imagem_url) {
         $sql = "INSERT INTO animais (especie, origem, descricao, preco, estoque, imagem_url, data_nascimento, data_cadastro) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+                VALUES (?, ?, ?, ?, ?, ?, CURDATE(), NOW())";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$especie, $origem, $descricao, $preco, $estoque, $imagem_url, $data_nascimento]);
+        return $stmt->execute([$especie, $origem, $descricao, $preco, $estoque, $imagem_url]);
     }
 
     public function decreaseStock(int $id, int $quantity) {
@@ -44,7 +49,7 @@ class Animal extends Model {
     }
 
     public function countAll() {
-        $stmt = $this->db->query("SELECT COUNT(*) FROM animais WHERE estoque > 0");
+        $stmt = $this->db->query("SELECT COUNT(*) FROM animais WHERE estoque > 0 AND ativo = 1");
         return $stmt->fetchColumn();
     }
 
@@ -62,5 +67,36 @@ class Animal extends Model {
         $stmt->bindValue(1, $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Atualiza os dados de um animal no banco de dados.
+     */
+    public function update($id, $especie, $origem, $descricao, $preco, $estoque, $imagem_url)
+    {
+        $sql = "UPDATE animais 
+                SET especie = ?, origem = ?, descricao = ?, preco = ?, estoque = ?, imagem_url = ?
+                WHERE id = ?";
+        try {
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([$especie, $origem, $descricao, $preco, $estoque, $imagem_url, $id]);
+        } catch (PDOException $e) {
+            error_log("Erro ao atualizar animal: " . $e->getMessage());
+            throw new Exception("Não foi possível atualizar o animal.");
+        }
+    }
+
+    /**
+     * Desativa um animal no banco de dados.
+     */
+    public function deactivate(int $id): bool {
+        $sql = "UPDATE animais SET ativo = 0 WHERE id = ?";
+        try {
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([$id]);
+        } catch (PDOException $e) {
+            error_log("Erro ao desativar animal: " . $e->getMessage());
+            throw new Exception("Não foi possível desativar o animal.");
+        }
     }
 }

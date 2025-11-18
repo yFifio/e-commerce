@@ -194,6 +194,9 @@
                     <a href="/admin/animais/novo" class="btn w-100" style="background-color: var(--rasta-green); color: white;">
                         <i class="fas fa-plus-circle me-2"></i>Adicionar Novo Animal
                     </a>
+                    <a href="/index.php/admin/animais/listar" class="btn w-100 mt-2" style="background-color: var(--rasta-yellow); color: var(--rasta-black);">
+                        <i class="fas fa-edit me-2"></i>Listar/Editar Animais
+                    </a>
                 </div>
             </div>
             <div class="card shadow mb-4">

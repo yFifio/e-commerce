@@ -31,10 +31,6 @@
                             <label for="descricao" class="form-label">Descrição</label>
                             <textarea class="form-control" id="descricao" name="descricao" rows="3"></textarea>
                         </div>
-                        <div class="mb-3">
-                            <label for="data_nascimento" class="form-label">Data de Nascimento</label>
-                            <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" required>
-                        </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="preco" class="form-label">Preço</label>

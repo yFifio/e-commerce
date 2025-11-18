@@ -169,6 +169,30 @@ switch ($route) {
         $controller->create();
         break;
 
+    case 'admin/animais/listar':
+        loadController('AdminAnimalController');
+        $controller = new AdminAnimalController();
+        $controller->listAll();
+        break;
+
+    case 'admin/animais/editar':
+        loadController('AdminAnimalController');
+        $controller = new AdminAnimalController();
+        $controller->showEditForm();
+        break;
+
+    case 'admin/animais/update':
+        loadController('AdminAnimalController');
+        $controller = new AdminAnimalController();
+        $controller->update();
+        break;
+
+    case 'admin/animais/deactivate':
+        loadController('AdminAnimalController');
+        $controller = new AdminAnimalController();
+        $controller->deactivate();
+        break;
+
     default:
         http_response_code(404);
         echo "Página não encontrada.";

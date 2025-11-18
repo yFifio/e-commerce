@@ -6,19 +6,21 @@ require_once __DIR__ . '/../Models/Contato.php';
 
 class DashboardController {
     private $db;
-    public function __construct() {
+
+    private function checkAdmin() {
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            http_response_code(403);
-            die("Acesso negado. Você não tem permissão para ver esta página.");
+            header('Location: /login?acesso_negado=1');
+            exit();
         }
-        $this->db = Database::getInstance()->getConnection();
     }
 
     public function index() {
+        $this->checkAdmin();
         require_once __DIR__ . '/../Views/dashboard.php';
     }
 
     public function data() {
+        $this->checkAdmin();
         header('Content-Type: application/json');
         
         $period = filter_input(INPUT_GET, 'period', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'all_time';
@@ -27,6 +29,7 @@ class DashboardController {
 
         $animalModel = new Animal();
         $adocaoModel = new Adocao();
+        $this->db = Database::getInstance()->getConnection(); // Adicionado para inicializar o DB
         $usuarioModel = new Usuario();
         $contatoModel = new Contato();
 

@@ -34,11 +34,15 @@ class ContatoController {
         }
     }
 
-    public function showMessages() {
+    private function checkAdmin() {
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            http_response_code(403);
-            die("Acesso negado.");
+            header('Location: /login?acesso_negado=1');
+            exit();
         }
+    }
+
+    public function showMessages() {
+        $this->checkAdmin();
 
         $db = Database::getInstance()->getConnection();
         $stmt = $db->query("SELECT * FROM contato_mensagens ORDER BY data_envio DESC");
@@ -48,10 +52,7 @@ class ContatoController {
     }
 
     public function delete() {
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            http_response_code(403);
-            die("Acesso negado.");
-        }
+        $this->checkAdmin();
 
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
