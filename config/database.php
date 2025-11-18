@@ -4,7 +4,7 @@ class Database {
     private const DB_HOST = 'localhost';
     private const DB_USER = 'root';
     private const DB_PASS = '323099';
-    private const DB_NAME = 'e-comercce';
+    private const DB_NAME = 'pets';
     private const DB_CHARSET = 'utf8mb4';
 
     private static $instance = null;

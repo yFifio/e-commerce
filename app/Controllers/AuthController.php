@@ -3,21 +3,35 @@ require_once __DIR__ . '/../Models/Usuario.php';
 
 class AuthController {
     public function register() {
-        $nome = $_POST['nome'];
-        $email = $_POST['email'];
-        $senha = $_POST['senha'];
+        // Usar filter_input para mais segurança ao obter dados do POST
+        $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_SPECIAL_CHARS);
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+        $senha = $_POST['senha']; // A senha será tratada com password_hash
+
+        // Validar se os dados foram recebidos corretamente
+        if (!$nome || !$email || !$senha) {
+            header('Location: /register?error=invalid_data');
+            exit();
+        }
 
         $usuarioModel = new Usuario();
+
+        // 1. Verificar se o e-mail já existe no banco de dados
+        if ($usuarioModel->findByEmail($email)) {
+            // Se existir, redireciona de volta para o formulário com um erro
+            header('Location: /register?error=email_exists');
+            exit();
+        }
+
+        // 2. Se não existir, tenta criar o usuário
         if ($usuarioModel->create($nome, $email, $senha)) {
             header('Location: /login');
-        } else {
-            echo "Erro ao registrar.";
         }
     }
 
     public function login() {
-        $email = $_POST['email'];
-        $senha = $_POST['senha'];
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+        $senha = $_POST['senha']; // Não filtramos a senha para não remover caracteres especiais
 
         $usuarioModel = new Usuario();
         $usuario = $usuarioModel->findByEmail($email);
@@ -28,7 +42,7 @@ class AuthController {
             $_SESSION['user_role'] = $usuario['role'];
             header('Location: /');
         } else {
-            header('Location: /login?error=1');
+            header('Location: /login?error=invalid_credentials');
         }
     }
 

@@ -1,151 +1,157 @@
 <?php
+
 require_once __DIR__ . '/../Models/Animal.php';
 
-class AdminAnimalController {
-
-    private function checkAdmin() {
+class AdminAnimalController
+{
+    public function __construct()
+    {
+        // Proteção para garantir que apenas administradores acessem este controlador
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            header('Location: /login?acesso_negado=1');
-            exit();
+            http_response_code(403);
+            die('Acesso negado.');
         }
     }
 
-    public function listAll() {
-        $this->checkAdmin();
+    /**
+     * Exibe a lista de todos os animais para o administrador.
+     */
+    public function listAll()
+    {
         $animalModel = new Animal();
-        $animais = $animalModel->getAll(true); // Passa true para obter todos os animais (visão de admin)
+        $animais = $animalModel->getAll(true); // true para buscar todos, incluindo inativos
         require_once __DIR__ . '/../Views/admin/listar_animais.php';
     }
 
-    public function showAddForm() {
-        $this->checkAdmin();
+    /**
+     * Exibe o formulário para adicionar um novo animal.
+     */
+    public function showAddForm()
+    {
         require_once __DIR__ . '/../Views/admin/adicionar_animal.php';
     }
 
-    public function create() {
-        $this->checkAdmin();
-        $especie = filter_input(INPUT_POST, 'especie', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $origem = filter_input(INPUT_POST, 'origem', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $estoque = filter_input(INPUT_POST, 'estoque', FILTER_VALIDATE_INT);
-
-        // Trata o preço para aceitar vírgula e ponto
-        $preco_raw = $_POST['preco'] ?? '0';
-        $preco_formatted = str_replace(',', '.', $preco_raw);
-        $preco = (float)$preco_formatted;
-
-        // Validação unificada
-        if (!$especie || $preco <= 0 || $estoque === false) {
-            $errorMessage = 'Erro de validação. Verifique os campos obrigatórios.';
-            if ($preco <= 0) {
-                $errorMessage = 'O preço deve ser um valor maior que zero.';
-            }
-            $_SESSION['form_feedback'] = ['type' => 'danger', 'message' => $errorMessage];
-            header('Location: /index.php/admin/animais/novo');
-            exit();
+    /**
+     * Processa o formulário de criação de um novo animal.
+     */
+    public function create()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit('Método não permitido.');
         }
 
+        $especie = filter_input(INPUT_POST, 'especie', FILTER_SANITIZE_SPECIAL_CHARS);
+        $origem = filter_input(INPUT_POST, 'origem', FILTER_SANITIZE_SPECIAL_CHARS);
+        $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_SPECIAL_CHARS);
+        $preco = filter_input(INPUT_POST, 'preco', FILTER_VALIDATE_FLOAT);
+        $estoque = filter_input(INPUT_POST, 'estoque', FILTER_VALIDATE_INT);
         $imagem_url = null;
-        if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == UPLOAD_ERR_OK) {
-            $uploadResult = $this->handleImageUpload($_FILES['imagem']);
-            if ($uploadResult['success']) {
-                $imagem_url = $uploadResult['filename'];
-            } else {
-                $_SESSION['form_feedback'] = ['type' => 'danger', 'message' => $uploadResult['error']];
-                header('Location: /index.php/admin/animais/novo');
-                exit();
+
+        // Lógica de upload de imagem
+        if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == 0) {
+            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/imagem/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $fileName = uniqid() . '-' . basename($_FILES['imagem']['name']);
+            $targetPath = $uploadDir . $fileName;
+            if (move_uploaded_file($_FILES['imagem']['tmp_name'], $targetPath)) {
+                $imagem_url = $fileName;
             }
         }
 
         $animalModel = new Animal();
-        try {
-            $animalModel->create($especie, $origem, $descricao, $preco, $estoque, $imagem_url);
-            $_SESSION['form_feedback'] = ['type' => 'success', 'message' => 'Animal adicionado com sucesso!'];
-            header('Location: /index.php/admin/animais/listar');
-            exit();
-        } catch (Exception $e) {
-            $_SESSION['form_feedback'] = ['type' => 'danger', 'message' => 'Erro ao adicionar animal: ' . $e->getMessage()];
-            if ($imagem_url && file_exists(__DIR__ . '/../../public/imagem/' . $imagem_url)) {
-                unlink(__DIR__ . '/../../public/imagem/' . $imagem_url);
-            }
-            header('Location: /index.php/admin/animais/novo');
-            exit();
-        }
+        $animalModel->create($especie, $origem, $descricao, $preco, $estoque, $imagem_url);
+
+        $_SESSION['list_feedback'] = ['type' => 'success', 'message' => 'Animal adicionado com sucesso!'];
+        header('Location: /index.php/admin/animais/listar');
+        exit();
     }
 
-    public function showEditForm() {
-        $this->checkAdmin();
+    /**
+     * Exibe o formulário para editar um animal existente.
+     */
+    public function showEditForm()
+    {
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if (!$id) {
-            header('Location: /index.php/admin/animais/listar');
-            exit();
+            http_response_code(400);
+            die('ID do animal inválido.');
         }
 
         $animalModel = new Animal();
         $animal = $animalModel->find($id);
 
         if (!$animal) {
-            $_SESSION['form_feedback'] = ['type' => 'warning', 'message' => 'Animal não encontrado.'];
-            header('Location: /index.php/admin/animais/listar');
-            exit();
+            http_response_code(404);
+            die('Animal não encontrado.');
         }
 
         require_once __DIR__ . '/../Views/admin/editar_animal.php';
     }
 
-    public function update() {
-        $this->checkAdmin();
-        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-        $especie = filter_input(INPUT_POST, 'especie', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $origem = filter_input(INPUT_POST, 'origem', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $estoque = filter_input(INPUT_POST, 'estoque', FILTER_VALIDATE_INT);
-
-        // Trata o preço para aceitar vírgula e ponto
-        $preco_raw = $_POST['preco'] ?? '0';
-        $preco_formatted = str_replace(',', '.', $preco_raw);
-        $preco = (float)$preco_formatted;
-
-        // Validação unificada
-        if (!$id || !$especie || $preco <= 0 || $estoque === false) {
-            $errorMessage = 'Erro de validação. Verifique os campos obrigatórios.';
-            if ($preco <= 0) {
-                $errorMessage = 'O preço deve ser um valor maior que zero.';
-            }
-            $_SESSION['form_feedback'] = ['type' => 'danger', 'message' => $errorMessage];
-            header('Location: /index.php/admin/animais/editar?id=' . $id);
-            exit();
+    /**
+     * Processa o formulário de atualização de um animal.
+     */
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit('Método não permitido.');
         }
+
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+        $especie = filter_input(INPUT_POST, 'especie', FILTER_SANITIZE_SPECIAL_CHARS);
+        $origem = filter_input(INPUT_POST, 'origem', FILTER_SANITIZE_SPECIAL_CHARS);
+        $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_SPECIAL_CHARS);
+        $preco = filter_input(INPUT_POST, 'preco', FILTER_VALIDATE_FLOAT);
+        $estoque = filter_input(INPUT_POST, 'estoque', FILTER_VALIDATE_INT);
 
         $animalModel = new Animal();
         $animalAtual = $animalModel->find($id);
-        $imagem_url = $animalAtual['imagem_url'];
 
+        if (!$animalAtual) {
+            $_SESSION['list_feedback'] = ['type' => 'danger', 'message' => 'Animal não encontrado para atualização.'];
+            header('Location: /index.php/admin/animais/listar');
+            exit();
+        }
+
+        $imagem_url = $animalAtual['imagem_url']; // Manter a imagem atual por padrão
+
+        // Lógica de upload de nova imagem
         if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] == UPLOAD_ERR_OK) {
-            $uploadResult = $this->handleImageUpload($_FILES['imagem'], $imagem_url);
-            if ($uploadResult['success']) {
-                $imagem_url = $uploadResult['filename'];
-            } else {
-                $_SESSION['form_feedback'] = ['type' => 'danger', 'message' => $uploadResult['error']];
-                header('Location: /index.php/admin/animais/editar?id=' . $id);
-                exit();
+            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/imagem/';
+            
+            // Remove a imagem antiga se uma nova for enviada
+            if (!empty($imagem_url) && file_exists($uploadDir . $imagem_url)) {
+                unlink($uploadDir . $imagem_url);
+            }
+
+            $fileName = uniqid() . '-' . basename($_FILES['imagem']['name']);
+            $targetPath = $uploadDir . $fileName;
+            if (move_uploaded_file($_FILES['imagem']['tmp_name'], $targetPath)) {
+                $imagem_url = $fileName; // Atualiza para o nome da nova imagem
             }
         }
 
-        try {
-            $animalModel->update($id, $especie, $origem, $descricao, $preco, $estoque, $imagem_url);
-            $_SESSION['form_feedback'] = ['type' => 'success', 'message' => 'Animal atualizado com sucesso!'];
-            header('Location: /index.php/admin/animais/listar');
-            exit();
-        } catch (Exception $e) {
-            $_SESSION['form_feedback'] = ['type' => 'danger', 'message' => 'Erro ao atualizar animal: ' . $e->getMessage()];
-            header('Location: /index.php/admin/animais/editar?id=' . $id);
-            exit();
-        }
+        $animalModel->update($id, $especie, $origem, $descricao, $preco, $estoque, $imagem_url);
+
+        $_SESSION['form_feedback'] = ['type' => 'success', 'message' => 'Animal atualizado com sucesso!'];
+        header('Location: /index.php/admin/animais/editar?id=' . $id);
+        exit();
     }
 
-    public function deactivate() {
-        $this->checkAdmin();
+    /**
+     * Reativa um animal que estava inativo.
+     */
+    public function reactivate()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit('Método não permitido.');
+        }
+
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
         if (!$id) {
@@ -153,48 +159,89 @@ class AdminAnimalController {
             header('Location: /index.php/admin/animais/listar');
             exit();
         }
-        
+
         $animalModel = new Animal();
         try {
-            $animalModel->deactivate($id);
-            $_SESSION['form_feedback'] = ['type' => 'success', 'message' => 'Animal desativado com sucesso! Ele não aparecerá mais na loja.'];
+            if ($animalModel->reactivate($id)) {
+                $_SESSION['list_feedback'] = ['type' => 'success', 'message' => 'Animal reativado com sucesso!'];
+            } else {
+                $_SESSION['list_feedback'] = ['type' => 'danger', 'message' => 'Não foi possível reativar o animal.'];
+            }
         } catch (Exception $e) {
-            $_SESSION['form_feedback'] = ['type' => 'danger', 'message' => 'Erro ao desativar o animal: ' . $e->getMessage()];
+            error_log($e->getMessage());
+            $_SESSION['list_feedback'] = ['type' => 'danger', 'message' => 'Ocorreu um erro ao reativar o animal.'];
         }
 
         header('Location: /index.php/admin/animais/listar');
         exit();
     }
 
-    private function handleImageUpload(array $file, ?string $oldImage = null): array
+    /**
+     * Desativa um animal.
+     */
+    public function deactivate()
     {
-        $uploadDir = __DIR__ . '/../../public/imagem/';
-        
-        // Validação de segurança
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 5 * 1024 * 1024; // 5 MB
-
-        if (!in_array($file['type'], $allowedTypes)) {
-            return ['success' => false, 'error' => 'Formato de imagem inválido. Use JPG, PNG, GIF ou WEBP.'];
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit('Método não permitido.');
         }
 
-        if ($file['size'] > $maxSize) {
-            return ['success' => false, 'error' => 'O arquivo de imagem é muito grande (máximo 5MB).'];
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+
+        if (!$id) {
+            $_SESSION['list_feedback'] = ['type' => 'danger', 'message' => 'ID do animal inválido.'];
+            header('Location: /index.php/admin/animais/listar');
+            exit();
         }
 
-        // Gera um nome de arquivo seguro e único
-        $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $fileName = bin2hex(random_bytes(16)) . '.' . $fileExtension;
-        $uploadFile = $uploadDir . $fileName;
+        $animalModel = new Animal();
+        $animalModel->deactivate($id);
 
-        if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
-            // Se for uma atualização e a imagem antiga existir, remove-a
-            if ($oldImage && file_exists($uploadDir . $oldImage)) {
-                unlink($uploadDir . $oldImage);
+        $_SESSION['list_feedback'] = ['type' => 'info', 'message' => 'Animal desativado com sucesso.'];
+        header('Location: /index.php/admin/animais/listar');
+        exit();
+    }
+
+    /**
+     * Exclui permanentemente um animal do banco de dados.
+     */
+    public function delete()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit('Método não permitido.');
+        }
+
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+
+        if (!$id) {
+            $_SESSION['form_feedback'] = ['type' => 'danger', 'message' => 'ID do animal inválido.'];
+            header('Location: /index.php/admin/animais/listar');
+            exit();
+        }
+
+        $animalModel = new Animal();
+        try {
+            // Opcional: Excluir a imagem associada do servidor
+            $animal = $animalModel->find($id);
+            if ($animal && !empty($animal['imagem_url'])) {
+                $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/imagem/' . $animal['imagem_url'];
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
             }
-            return ['success' => true, 'filename' => $fileName];
+
+            if ($animalModel->delete($id)) {
+                $_SESSION['list_feedback'] = ['type' => 'success', 'message' => 'Animal excluído permanentemente.'];
+            } else {
+                $_SESSION['list_feedback'] = ['type' => 'danger', 'message' => 'Não foi possível excluir o animal.'];
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            $_SESSION['list_feedback'] = ['type' => 'danger', 'message' => 'Ocorreu um erro ao excluir o animal.'];
         }
 
-        return ['success' => false, 'error' => 'Falha ao mover o arquivo de imagem.'];
+        header('Location: /index.php/admin/animais/listar');
+        exit();
     }
 }

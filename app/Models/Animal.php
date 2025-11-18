@@ -37,8 +37,8 @@ class Animal extends Model {
     }
 
     public function create(string $especie, ?string $origem, ?string $descricao, float $preco, int $estoque, ?string $imagem_url) {
-        $sql = "INSERT INTO animais (especie, origem, descricao, preco, estoque, imagem_url, data_nascimento, data_cadastro) 
-                VALUES (?, ?, ?, ?, ?, ?, CURDATE(), NOW())";
+        $sql = "INSERT INTO animais (especie, origem, descricao, preco, estoque, imagem_url, data_cadastro) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW())";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$especie, $origem, $descricao, $preco, $estoque, $imagem_url]);
     }
@@ -72,7 +72,7 @@ class Animal extends Model {
     /**
      * Atualiza os dados de um animal no banco de dados.
      */
-    public function update($id, $especie, $origem, $descricao, $preco, $estoque, $imagem_url)
+    public function update(int $id, string $especie, ?string $origem, ?string $descricao, float $preco, int $estoque, ?string $imagem_url)
     {
         $sql = "UPDATE animais 
                 SET especie = ?, origem = ?, descricao = ?, preco = ?, estoque = ?, imagem_url = ?
@@ -97,6 +97,35 @@ class Animal extends Model {
         } catch (PDOException $e) {
             error_log("Erro ao desativar animal: " . $e->getMessage());
             throw new Exception("Não foi possível desativar o animal.");
+        }
+    }
+
+    /**
+     * Reativa um animal no banco de dados.
+     */
+    public function reactivate(int $id): bool {
+        $sql = "UPDATE animais SET ativo = 1 WHERE id = ?";
+        try {
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([$id]);
+        } catch (PDOException $e) {
+            error_log("Erro ao reativar animal: " . $e->getMessage());
+            throw new Exception("Não foi possível reativar o animal.");
+        }
+    }
+
+    /**
+     * Exclui permanentemente um animal do banco de dados.
+     * CUIDADO: Esta ação não pode ser desfeita.
+     */
+    public function delete(int $id): bool {
+        $sql = "DELETE FROM animais WHERE id = ?";
+        try {
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([$id]);
+        } catch (PDOException $e) {
+            error_log("Erro ao excluir animal: " . $e->getMessage());
+            throw new Exception("Não foi possível excluir o animal.");
         }
     }
 }

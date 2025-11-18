@@ -12,8 +12,8 @@
             </div>
             <div class="col-md-4">
                 <h1 class="display-5"><?php echo htmlspecialchars($animal['especie']); ?></h1>
-                <p class="lead text-muted">Origem: <?php echo htmlspecialchars($animal['origem']); ?></p>
-                <h2 class="price my-4">R$ <?php echo number_format($animal['preco'], 2, ',', '.'); ?></h2>
+                <p class="lead text-muted">Origem: <?php echo htmlspecialchars($animal['origem'] ?? 'Não informada'); ?></p>
+                <h2 class="price my-3">R$ <?php echo number_format($animal['preco'] ?? 0, 2, ',', '.'); ?></h2>
 
                 <?php if (!empty($animal['descricao'])): ?>
                     <div class="description my-4">
@@ -22,8 +22,7 @@
                     </div>
                 <?php endif; ?>
                 
-                <p><strong>Data de Nascimento:</strong> <?php echo htmlspecialchars(date("d/m/Y", strtotime($animal['data_nascimento']))); ?></p>
-                <p><strong>Em estoque:</strong> <?php echo htmlspecialchars($animal['estoque']); ?> unidades</p>
+                <p><strong>Em estoque:</strong> <?php echo htmlspecialchars($animal['estoque'] ?? 0); ?> unidades</p>
 
                 <form action="/carrinho/add" method="post" class="mt-4">
                     <input type="hidden" name="id" value="<?php echo $animal['id']; ?>">
@@ -49,7 +48,7 @@
                             </a>
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo htmlspecialchars($relatedAnimal['especie']); ?></h5>
-                                <p class="card-text">R$ <?php echo number_format($relatedAnimal['preco'], 2, ',', '.'); ?></p>
+                                <p class="card-text">R$ <?php echo number_format($relatedAnimal['preco'] ?? 0, 2, ',', '.'); ?></p>
                                 <a href="/animal?id=<?php echo $relatedAnimal['id']; ?>" class="btn btn-sm btn-outline-secondary">Ver Detalhes</a>
                             </div>
                         </div>

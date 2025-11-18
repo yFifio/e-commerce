@@ -58,6 +58,26 @@
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
                     </form>
+
+                    <?php if (isset($animal['ativo']) && $animal['ativo'] == 0): ?>
+                        <hr class="my-4">
+                        <div class="p-3 bg-light border rounded">
+                            <h5 class="text-danger mb-3">Opções para Animal Inativo</h5>
+                            <p>Este animal está inativo e não é exibido na loja. Você pode reativá-lo ou excluí-lo permanentemente.</p>
+                            <div class="d-flex justify-content-start gap-2">
+                                <!-- Formulário para Reativar -->
+                                <form action="/index.php/admin/animais/reactivate" method="POST" onsubmit="return confirm('Tem certeza que deseja reativar este animal?');">
+                                    <input type="hidden" name="id" value="<?= htmlspecialchars($animal['id']) ?>">
+                                    <button type="submit" class="btn btn-success">Reativar Animal</button>
+                                </form>
+                                <!-- Formulário para Excluir -->
+                                <form action="/index.php/admin/animais/delete" method="POST" onsubmit="return confirm('ATENÇÃO: Esta ação é irreversível. Tem certeza que deseja excluir permanentemente este animal?');">
+                                    <input type="hidden" name="id" value="<?= htmlspecialchars($animal['id']) ?>">
+                                    <button type="submit" class="btn btn-danger">Excluir Permanentemente</button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -65,36 +85,3 @@
 </div>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
-
-```
-
-### 3. Adicionar Método `update` ao Model `Animal.php`
-
-Como não tenho o conteúdo do seu arquivo `app/Models/Animal.php`, vou fornecer o código do método `update`. Você deve adicioná-lo dentro da classe `Animal` no arquivo correspondente.
-
-```php
-    /**
-     * Atualiza os dados de um animal no banco de dados.
-     */
-    public function update($id, $especie, $origem, $descricao, $preco, $estoque, $imagem_url, $data_nascimento) {
-        $sql = "UPDATE animais 
-                SET especie = ?, origem = ?, descricao = ?, preco = ?, estoque = ?, imagem_url = ?, data_nascimento = ?
-                WHERE id = ?";
-        try {
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([$especie, $origem, $descricao, $preco, $estoque, $imagem_url, $data_nascimento, $id]);
-            return true;
-        } catch (PDOException $e) {
-            // Em um ambiente de produção, você poderia logar o erro em vez de exibi-lo.
-            error_log("Erro ao atualizar animal: " . $e->getMessage());
-            throw new Exception("Não foi possível atualizar o animal.");
-        }
-    }
-```
-
-Com esses arquivos e o método `update` implementados, a funcionalidade de editar produtos estará completa. O próximo passo seria criar a funcionalidade de deletar, que já tem um botão na tela de listagem.
-
-<!--
-[PROMPT_SUGGESTION]Crie o método para deletar um animal no AdminAnimalController e no Animal Model.[/PROMPT_SUGGESTION]
-[PROMPT_SUGGESTION]Como posso adicionar paginação na lista de animais?[/PROMPT_SUGGESTION]
--->

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../public/vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../Models/Animal.php';
 
 use MercadoPago\Client\Preference\PreferenceClient;

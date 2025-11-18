@@ -4,9 +4,11 @@ require_once __DIR__ . '/../../config/database.php';
 abstract class Model {
     protected $db;
 
-    public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+    public function __construct()
+    {
+        $this->db = Database::getInstance()->getConnection(); // This should already be configured with utf8mb4
     }
+
 
     protected function getDateWhereClause(string $period, string $dateColumn, ?string $startDate = null, ?string $endDate = null): string {
         if ($startDate && $endDate) {
